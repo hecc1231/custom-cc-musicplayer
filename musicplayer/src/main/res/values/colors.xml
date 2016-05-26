@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#5CACEE</color>
+    <color name="colorPrimaryDark">#5CACEE</color>
+    <color name="colorAccent">#5CACEE</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColor">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#635d5d</color>
+    <color name="lrc_colorPrimaryDark">#4e78a6</color>
+</resources>

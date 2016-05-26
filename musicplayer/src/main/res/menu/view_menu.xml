@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:icon="@drawable/drawer_home"
+            android:id = "@+id/drawer_home"
+            android:title="Home"/>
+        <item
+            android:id = "@+id/drawer_surround"
+            android:icon="@drawable/drawer_surround"
+            android:title="Surround" />
+        <item
+            android:id="@+id/drawer_own_music"
+            android:icon="@drawable/drawer_music"
+            android:title="My Music"/>
+        <item
+            android:id="@+id/drawe_favor_list"
+            android:icon="@drawable/drawer_list"
+            android:title="Favorite List"/>
+        <item
+            android:icon="@drawable/drawer_share"
+            android:id = "@+id/drawer_share"
+            android:title="Share"/>
+    </group>
+</menu>

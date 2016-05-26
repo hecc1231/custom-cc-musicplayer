@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.hersch.helloui.MusicFragment">
+    <TextView
+        android:id="@+id/music_tip_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textSize="15dp"
+        android:gravity="center"
+        android:text="本地歌曲"
+        android:textColor="@android:color/darker_gray"/>
+    <LinearLayout
+        android:background="@android:color/transparent"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+    </LinearLayout>
+    <GridLayout
+        android:id="@+id/music_play_bar"
+        android:columnCount="7"
+        android:orientation="horizontal"
+        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        android:background="@drawable/lrc_bg">
+        <ImageView
+            android:layout_columnSpan="1"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:id="@+id/hello_album_image"
+            android:layout_height="60dp"
+            android:src="@drawable/bg"/>
+        <TextView
+            android:textColor="@color/white"
+            android:layout_margin="10dp"
+            android:layout_columnSpan="4"
+            android:layout_columnWeight="1"
+            android:textSize="15dp"
+            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:text="songnfo"
+            android:id="@+id/songInfoText"/>
+        <Button
+            android:layout_margin="10dp"
+            android:layout_columnSpan="1"
+            android:background="@drawable/pause"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/play_btn"/>
+        <Button
+            android:layout_margin="10dp"
+            android:layout_columnSpan="1"
+            android:background="@drawable/next"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/next_play_btn" />
+    </GridLayout>
+
+</LinearLayout>

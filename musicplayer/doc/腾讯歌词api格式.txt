@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="gb2312"?>
+<command-lable-xwl78-qq-music>
+<cmd value="4105" verson="7">
+<result>0</result>
+<reason></reason>
+<qq uin="" />
+<songcount>4</songcount>
+]></songname>
+]></singer>
+<result_type>1</result_type>
+<rangemin>1</rangemin>
+<rangemax>20</rangemax>
+<songinfo id="5016169"  scroll="1">
+<seqnum>0</seqnum>
+]></name>
+]></singername>
+</songinfo>
+<songinfo id="101824312"  scroll="1">
+<seqnum>1</seqnum>
+]></name>
+]></singername>
+</songinfo>
+<songinfo id="102783402"  scroll="1">
+<seqnum>2</seqnum>
+]></name>
+]></singername>
+</songinfo>
+<songinfo id="102220983"  scroll="1">
+<seqnum>3</seqnum>
+]></name>
+]></singername>
+</songinfo>
+</cmd>
+</command-lable-xwl78-qq-music>
+
