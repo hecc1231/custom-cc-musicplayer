@@ -34,7 +34,9 @@ import java.util.regex.Pattern;
  * Created by Hersch on 2016/5/15.
  */
 public class LrcContentFragment extends Fragment{
-    private TextView lrcText;
+    private MyLrcTextView lrcText;
+    private MusicService musicService;
+    private LrcContentGetter mLrcContentGetter;
     private final int MSG_ERROR = 1;
     private final int MSG_SUCCESS = 0;
     @Override
@@ -49,14 +51,8 @@ public class LrcContentFragment extends Fragment{
         searchLrcThread();
     }
     public void findViews(View view){
-        lrcText = (TextView)view.findViewById(R.id.lrcText);
-        lrcText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.popBackStack();
-            }
-        });
+        lrcText = (MyLrcTextView)view.findViewById(R.id.lrc_text);
+        lrcText.setClickable(false);
     }
     public Handler handler = new Handler(){
         @Override
@@ -81,26 +77,55 @@ public class LrcContentFragment extends Fragment{
      */
     public void searchLrcThread(){
         LrcUi lrcUi = (LrcUi)getActivity();
-        MusicService musicService = lrcUi.getService();
+        musicService = lrcUi.getService();
         int index = musicService.getPlayIndex();
         if(detectNet(lrcUi.getApplicationContext())) {
             musicService = ((LrcUi)getActivity()).getService();
             Song song = musicService.getSongList().get(index);
-            new LrcContentGetter(song,handler,musicService);//获取歌词
+            mLrcContentGetter = new LrcContentGetter(song,handler,musicService);//获取歌词类
         }
         else{
             Log.i("Lyric", "network error");
             lrcText.setText("网络未连接");
         }
+        //设置歌词更新,将歌词列表传入自定义textview中绘制
+        lrcText.setLrcContentList(mLrcContentGetter.getLrcContentList());
+        handler.post(updateLrcRunnable);
     }
     Runnable updateLrcRunnable = new Runnable() {
         @Override
         public void run() {
-//            lrcText.setIndex(lrcIndex());
-//            PlayerActivity.lrcView.invalidate();
-//            handler.postDelayed(mRunnable, 100);
+            lrcText.setIndex(currentLrcLine());//获取当前正在播放所在行
+            lrcText.invalidate();//更新自定义的textView
+            handler.postDelayed(updateLrcRunnable, 100);//每100ms更新一次
         }
     };
+
+    /**
+     * 根据时间戳计算当前时间应该播放哪一行歌词
+     * @return
+     */
+    public int currentLrcLine(){
+        int index = 0;
+        int time = musicService.getCurrentPosition();
+        List<Integer>timeList = mLrcContentGetter.getTimeList();
+        List<String>lrcContentList = mLrcContentGetter.getLrcContentList();
+        for(int i=0;i<lrcContentList.size();i++){
+            if(time<timeList.get(i)&&i==0){
+                index = 0;
+                break;
+            }
+            else if(i<timeList.size()-1&&time>=timeList.get(i)&&time<timeList.get(i+1)){
+                index = i;
+                break;
+            }
+            else if(time>=timeList.get(i)&&i==timeList.size()-1){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
     /**
      * 检测网络连接状态
      * @param context

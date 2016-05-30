@@ -47,6 +47,7 @@ public class LrcUi extends AppCompatActivity{
     private ImageView albumImageView;//专辑画面
     private LrcContentFragment contentFragment;
     private MusicService musicService;//后台服务实例
+    private MyReceiveBroadcast  myBroadcastReceiver;
     private final int SEEKBAR_CURRENT_POSITION = 0;
     public static final String BROADCAST_ACTION = "com.hersch.helloui.LrcUi";
 
@@ -67,18 +68,18 @@ public class LrcUi extends AppCompatActivity{
      * 再次返回该Activity时复原模式按钮的状态
      */
     public void backToModeBtn() {
-            int mode = musicService.getPlayMode();
-            switch (mode) {
-                case MusicService.SINGLE_MODE:
-                    modeBtn.setBackgroundResource(R.drawable.single);
-                    break;
-                case MusicService.RANDOM_MODE:
-                    modeBtn.setBackgroundResource(R.drawable.random);
-                    break;
-                default:
-                    modeBtn.setBackgroundResource(R.drawable.list_circle);
-                    break;
-            }
+        int mode = musicService.getPlayMode();
+        switch (mode) {
+            case MusicService.SINGLE_MODE:
+                modeBtn.setBackgroundResource(R.drawable.single);
+                break;
+            case MusicService.RANDOM_MODE:
+                modeBtn.setBackgroundResource(R.drawable.random);
+                break;
+            default:
+                modeBtn.setBackgroundResource(R.drawable.list_circle);
+                break;
+        }
     }
     public MusicService getService(){
         return this.musicService;
@@ -240,10 +241,10 @@ public class LrcUi extends AppCompatActivity{
         transaction.commit();
     }
     public void registerBroadcast(){
-        MyReceiveBroadcast  myBroadcastReceiver = new MyReceiveBroadcast();
-                 IntentFilter intentFilter = new IntentFilter();
-                 intentFilter.addAction(BROADCAST_ACTION);
-                 registerReceiver(myBroadcastReceiver, intentFilter);
+        myBroadcastReceiver = new MyReceiveBroadcast();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BROADCAST_ACTION);
+        registerReceiver(myBroadcastReceiver, intentFilter);
     }
     class MyReceiveBroadcast extends BroadcastReceiver{
         @Override
@@ -301,6 +302,7 @@ public class LrcUi extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         unbindService(serviceConnection);
+        unregisterReceiver(myBroadcastReceiver);
         Log.i("LrcUi","Destroy");
         super.onDestroy();
     }

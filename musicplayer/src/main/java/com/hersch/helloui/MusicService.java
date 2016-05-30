@@ -30,16 +30,8 @@ public class MusicService extends Service{
     private int playIndex=0;
     private MediaPlayer musicPlayer;
     private List<Song>songList;//歌曲列表
-    private List<String>lrcContentList;
-    private List<Integer>timeList;
     public List<Song> getSongList() {
         return songList;
-    }
-    public void addSingLineLrcContent(String str){
-        lrcContentList.add(str);
-    }
-    public void addTimeList(int time){
-        timeList.add(time);
     }
     public void initPlayer() {
         playIndex = 0;
@@ -83,9 +75,6 @@ public class MusicService extends Service{
     public void setPlayMode(){
         this.playMode = playMode<2?playMode+1:0;
     }
-    public int getPlayMode(){
-        return playMode;
-    }
     public void preSongPlay() {
         if(playMode == SINGLE_MODE){
             //
@@ -106,6 +95,9 @@ public class MusicService extends Service{
             Log.i("MusicService","preSongPlay error");
             e.printStackTrace();
         }
+    }
+    public int getPlayMode(){
+        return playMode;
     }
     public int getCurrentPosition(){
         return musicPlayer.getCurrentPosition();
@@ -140,17 +132,14 @@ public class MusicService extends Service{
     }
     public void stopPlay() {
         musicPlayer.pause();
+        Log.i("MusicService",""+musicPlayer.getCurrentPosition());
     }
     public void continuePlay() {
         musicPlayer.start();
     }
     //初始化歌曲列表songList
     void initMusicList() {
-        timeList = new ArrayList<>();
-        timeList.clear();
-        lrcContentList = new ArrayList<>();
-        lrcContentList.clear();
-        songList = new ArrayList<Song>();
+        songList = new ArrayList<>();
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         for (int i = 0; i < cursor.getCount(); i++)
         {

@@ -4,23 +4,23 @@
     android:layout_width="match_parent"
     android:background="@drawable/lrc_bg"
     android:layout_height="match_parent">
-    <ScrollView
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <TextView
-            android:layout_margin="20dp"
-            android:textSize="15dp"
-            android:typeface="serif"
-            android:layout_height="match_parent"
-            android:layout_width="fill_parent"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:lineSpacingExtra="10dp"
-            android:id="@+id/lrcText"/>
-    </ScrollView>
-    <!--<com.hersch.helloui.MyLrcTextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/lrcContent" />-->
+    <!--<ScrollView-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent">-->
+        <!--<TextView-->
+            <!--android:layout_margin="20dp"-->
+            <!--android:textSize="15dp"-->
+            <!--android:typeface="serif"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:gravity="center"-->
+            <!--android:lineSpacingExtra="10dp"-->
+            <!--android:id="@+id/lrcText"/>-->
+    <!--</ScrollView>-->
+    <com.hersch.helloui.MyLrcTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lrc_text" />
 </LinearLayout>

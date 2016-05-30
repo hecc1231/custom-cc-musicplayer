@@ -166,7 +166,7 @@ public class MusicFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
                 musicService.onItemPlay(position);
-                setPlayBtnDrawable();
+                setPlayBtnDrawable();//改变播放按钮的状态
             }
 
             @Override

@@ -4,6 +4,7 @@ import android.app.Service;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.hersch.songobject.Song;
 
@@ -15,6 +16,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -24,14 +27,27 @@ public class LrcContentGetter {
     private Song song;
     Handler handler;
     MusicService musicService;
+    private List<String> lrcContentList;//歌词表
+    private List<Integer>timeList;//歌词时间戳表
     private final int CONTENT_MIN_SIZE = 300;
     private final int MSG_ERROR = 1;
     private final int MSG_SUCCESS = 0;
+    private final int TIME_INTERNAL = 5000;
     public LrcContentGetter(Song song,Handler handler,MusicService musicService){
         this.song = song;
         this.handler = handler;
         this.musicService = musicService;
+        lrcContentList = new ArrayList<>();
+        timeList = new ArrayList<>();
+        lrcContentList.clear();
+        timeList.clear();
         new Thread(getLrcRunnable).start();
+    }
+    public List<String> getLrcContentList(){
+        return lrcContentList;
+    }
+    public List<Integer> getTimeList(){
+        return timeList;
     }
     Runnable getLrcRunnable = new Runnable() {
         @Override
@@ -76,7 +92,7 @@ public class LrcContentGetter {
                     url = new URL("http://music.qq.com/miniportal/static/lyric/"+id%100+"/"+id+".xml");
                     httpURLConnection = (HttpURLConnection) url.openConnection();
                     String contentLrc = getDataFromURL(httpURLConnection);
-                    //找到歌词则发送给歌词界面并跳出
+                    //找到最合适的歌词则发送给歌词界面并跳出
                     if(contentLrc.length()>=CONTENT_MIN_SIZE){
                         Message msg = new Message();
                         Bundle data = new Bundle();
@@ -87,6 +103,8 @@ public class LrcContentGetter {
                         return;
                     }
                     count--;
+                    timeList.clear();
+                    lrcContentList.clear();
                 }
                 //未找到歌词返回error
                 Message msg = new Message();
@@ -153,7 +171,7 @@ public class LrcContentGetter {
                 str = getSingleLineLrcTime(str);
                 if(!str.equals("")) {
                     lyricStr += str + "\r\n";
-                    musicService.addSingLineLrcContent(str);
+                    lrcContentList.add(str);
                 }
             }
         } catch (IOException e) {
@@ -161,6 +179,12 @@ public class LrcContentGetter {
         }
         return lyricStr;
     }
+
+    /**
+     * 获取单行歌词的时间戳和歌词内容
+     * @param str
+     * @return
+     */
     public String getSingleLineLrcTime(String str) {
         Pattern pattern = Pattern.compile("[0-9]{2}:[0-9]{2}.[0-9]{2}");
         str = str.substring(1);
@@ -168,9 +192,18 @@ public class LrcContentGetter {
             int index = 0;
             int middle = str.indexOf("]");
             String timeStr = str.substring(0, middle);//获取时间戳
-            int totalTime = Integer.parseInt(timeStr.substring(0,2))*60*1000+
-                    Integer.parseInt(timeStr.substring(3,5))*1000+Integer.parseInt(timeStr.substring(6,8));//00:03.98
-            musicService.addTimeList(totalTime);
+            //会存在只有时间戳没有歌词的情况这个情况要把多余的时间戳舍去
+            /**
+             * [00:20.41]
+             * [00:22.43]请你不要睡觉
+             * 这个时候需要将[00:20.41]舍去，保证歌词与时间戳一一对应
+             */
+            //即除去只有时间戳的例子
+            if(str.length()-1!=middle) {
+                int totalTime = Integer.parseInt(timeStr.substring(0, 2)) * 60 * 1000 +
+                        Integer.parseInt(timeStr.substring(3, 5)) * 1000 + Integer.parseInt(timeStr.substring(6, 8));//00:03.98
+                timeList.add(totalTime);
+            }
             //最后一行
             if((index=str.indexOf("]]></lyric>"))!=-1){
                 str = str.substring(middle+1,index);
