@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <service android:name="com.hersch.helloui.MusicService"/>
-        <activity android:name="com.hersch.helloui.HelloActivity" >
+        <activity android:name="com.hersch.helloui.MainUi" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

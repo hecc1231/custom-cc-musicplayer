@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -28,9 +29,17 @@ public class MusicService extends Service{
     private int playMode = LIST_MODE;
     private int playIndex=0;
     private MediaPlayer musicPlayer;
-    private List<Song>songList;
+    private List<Song>songList;//歌曲列表
+    private List<String>lrcContentList;
+    private List<Integer>timeList;
     public List<Song> getSongList() {
         return songList;
+    }
+    public void addSingLineLrcContent(String str){
+        lrcContentList.add(str);
+    }
+    public void addTimeList(int time){
+        timeList.add(time);
     }
     public void initPlayer() {
         playIndex = 0;
@@ -44,6 +53,17 @@ public class MusicService extends Service{
                 e.printStackTrace();
             }
         }
+        musicPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                nextSongPlay();
+                Intent intent = new Intent(LrcUi.BROADCAST_ACTION);
+                Bundle bundle = new Bundle();
+                bundle.putString("complete", "complete");
+                intent.putExtras(bundle);
+                sendBroadcast(intent);
+            }
+        });
     }
     public int getSongNum() {
         return songList.size();
@@ -113,7 +133,7 @@ public class MusicService extends Service{
         }
     }
     public int getTotalTime(){
-      return musicPlayer.getDuration();
+        return musicPlayer.getDuration();
     }
     public void seekToPosition(int postion){
         musicPlayer.seekTo(postion);
@@ -124,8 +144,12 @@ public class MusicService extends Service{
     public void continuePlay() {
         musicPlayer.start();
     }
-    void initMusicList()//初始化歌曲列表songList
-    {
+    //初始化歌曲列表songList
+    void initMusicList() {
+        timeList = new ArrayList<>();
+        timeList.clear();
+        lrcContentList = new ArrayList<>();
+        lrcContentList.clear();
         songList = new ArrayList<Song>();
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         for (int i = 0; i < cursor.getCount(); i++)
@@ -167,11 +191,11 @@ public class MusicService extends Service{
         initPlayer();
         return new MyBinder();
     }
-class MyBinder extends Binder
-{
-    public MusicService getService()
+    class MyBinder extends Binder
     {
-        return MusicService.this;
+        public MusicService getService()
+        {
+            return MusicService.this;
+        }
     }
-}
 }

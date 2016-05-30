@@ -22,11 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
+import com.hersch.adapter.PagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelloActivity extends AppCompatActivity {
+public class MainUi extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -45,7 +46,7 @@ public class HelloActivity extends AppCompatActivity {
         initViews();
         setDrawerLayout();
         initTabPagerList();
-        Intent intent = new Intent(HelloActivity.this,MusicService.class);
+        Intent intent = new Intent(MainUi.this,MusicService.class);
         startService(intent);
     }
 
@@ -60,9 +61,9 @@ public class HelloActivity extends AppCompatActivity {
         nameText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = LayoutInflater.from(HelloActivity.this).inflate(R.layout.drawer_alertdialg, null);
+                View view = LayoutInflater.from(MainUi.this).inflate(R.layout.drawer_alertdialg, null);
                 final EditText nameEdit = (EditText) view.findViewById(R.id.name_edit);
-                new AlertDialog.Builder(HelloActivity.this).setTitle("请输入").setIcon(
+                new AlertDialog.Builder(MainUi.this).setTitle("请输入").setIcon(
                         R.drawable.search).setView(view).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

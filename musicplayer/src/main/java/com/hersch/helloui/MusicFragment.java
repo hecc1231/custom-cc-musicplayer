@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
+import com.hersch.adapter.RecyclerAdapter;
 
 public class MusicFragment extends Fragment {
     private RecyclerView mRecyclerView;
@@ -75,7 +76,7 @@ public class MusicFragment extends Fragment {
         }
     }
     /**
-     * 接受子线程传来的消息
+     * 接受子线程传来的下方歌曲和歌手信息（更新下方歌曲栏信息）
      */
     Handler handler = new Handler(){
         @Override
@@ -83,7 +84,6 @@ public class MusicFragment extends Fragment {
             switch (msg.what){
                 case 1:
                     String str = msg.getData().getString("data");
-                    Log.i("s","msg");
                     songInfoText.setText(str);
                     break;
                 case 2:
@@ -100,7 +100,7 @@ public class MusicFragment extends Fragment {
                 Message msg = new Message();
                 msg.what = 1;
                 String str = musicService.getSongList().get(index).getTitle()+"\r\n"+
-                                          musicService.getSongList().get(index).getArtist();
+                        musicService.getSongList().get(index).getArtist();
                 Bundle data = new Bundle();
                 data.putString("data",str);
                 msg.setData(data);
@@ -183,8 +183,13 @@ public class MusicFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("song",musicService.getSongList().get(musicService.getPlayIndex()));
                 intent.putExtras(bundle);
-                startActivityForResult(intent,MUSIC_FRAGMENT);
+                startActivityForResult(intent, MUSIC_FRAGMENT);
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }

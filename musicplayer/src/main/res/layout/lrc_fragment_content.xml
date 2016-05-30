@@ -19,4 +19,8 @@
             android:lineSpacingExtra="10dp"
             android:id="@+id/lrcText"/>
     </ScrollView>
+    <!--<com.hersch.helloui.MyLrcTextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/lrcContent" />-->
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.hersch.helloui;
+package com.hersch.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
