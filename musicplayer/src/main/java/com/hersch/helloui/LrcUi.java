@@ -25,11 +25,15 @@ import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
 import com.hersch.songobject.Song;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -38,6 +42,8 @@ import java.util.Date;
 public class LrcUi extends AppCompatActivity{
     private Toolbar toolbar;//菜单栏
     private SeekBar seekBar;//进度条
+    private TextView toolBarSingerText;
+    private TextView toolBarSongText;
     private TextView seekBarStartText;
     private TextView seekBarEndText;
     private Button nextBtn;//播放下一首
@@ -63,7 +69,53 @@ public class LrcUi extends AppCompatActivity{
         registerBroadcast();
         initView();
     }
+    /**
+     * 初始化组件
+     */
+    public void initView(){
+        toolBarSingerText = (TextView)findViewById(R.id.lrc_toolbar_singer_text);
+        toolBarSongText = (TextView)findViewById(R.id.lrc_toolbar_song_text);
+        seekBar = (SeekBar)findViewById(R.id.seekBar);
+        seekBar.setMax(100);
+        toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.lrc_toolbar);
+        albumImageView = (ImageView)findViewById(R.id.album_image);
+        seekBarStartText = (TextView)findViewById(R.id.seekbar_start_text);
+        seekBarEndText = (TextView)findViewById(R.id.seekbar_end_text);
+        preBtn = (Button)findViewById(R.id.lrc_pre_btn);
+        nextBtn = (Button)findViewById(R.id.lrc_next_btn);
+        modeBtn = (Button)findViewById(R.id.lrc_mode_btn);
+        playBtn = (Button)findViewById(R.id.lrc_play_btn);
+        preBtn.setOnClickListener(btnClickListener);
+        nextBtn.setOnClickListener(btnClickListener);
+        modeBtn.setOnClickListener(btnClickListener);
+        playBtn.setOnClickListener(btnClickListener);
+        albumImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFragment();
+            }
+        });
+        setSupportActionBar(toolbar);
+        setHomeBtnEnable();
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                SimpleDateFormat sDateFormat = new SimpleDateFormat("mm:ss");
+                String s = sDateFormat.format(new Date(progress * musicService.getTotalTime() / 100));
+                seekBarStartText.setText(s);
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                musicService.seekToPosition(seekBar.getProgress() * musicService.getTotalTime() / 100);//将歌曲播放进度更新
+            }
+        });
+    }
     /**
      * 再次返回该Activity时复原模式按钮的状态
      */
@@ -94,6 +146,7 @@ public class LrcUi extends AppCompatActivity{
             MusicService.MyBinder myBinder= (MusicService.MyBinder)service;
             musicService = myBinder.getService();//获取歌曲服务
             setPlayBtnDrawable();//根据当前播放状态初始化play按钮的状态图
+            setToolBarInfo();
             backToModeBtn();
             new Thread(new Runnable() {
                 @Override
@@ -123,51 +176,6 @@ public class LrcUi extends AppCompatActivity{
 
         }
     };
-    /**
-     * 初始化组件
-     */
-    public void initView(){
-        seekBar = (SeekBar)findViewById(R.id.seekBar);
-        seekBar.setMax(100);
-        toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.lrc_toolbar);
-        albumImageView = (ImageView)findViewById(R.id.album_image);
-        seekBarStartText = (TextView)findViewById(R.id.seekbar_start_text);
-        seekBarEndText = (TextView)findViewById(R.id.seekbar_end_text);
-        preBtn = (Button)findViewById(R.id.lrc_pre_btn);
-        nextBtn = (Button)findViewById(R.id.lrc_next_btn);
-        modeBtn = (Button)findViewById(R.id.lrc_mode_btn);
-        playBtn = (Button)findViewById(R.id.lrc_play_btn);
-        preBtn.setOnClickListener(btnClickListener);
-        nextBtn.setOnClickListener(btnClickListener);
-        modeBtn.setOnClickListener(btnClickListener);
-        playBtn.setOnClickListener(btnClickListener);
-        albumImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFragment();
-            }
-        });
-        setSupportActionBar(toolbar);
-        setHomeBtnEnable();
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                SimpleDateFormat sDateFormat = new SimpleDateFormat("mm:ss");
-                String s = sDateFormat.format(new Date(progress*musicService.getTotalTime()/100));
-                seekBarStartText.setText(s);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                musicService.seekToPosition(seekBar.getProgress()*musicService.getTotalTime()/100);//将歌曲播放进度更新
-            }
-        });
-    }
 
     /**
      * 设置play按钮的状态图
@@ -193,38 +201,51 @@ public class LrcUi extends AppCompatActivity{
                     else {
                         musicService.continuePlay();
                         playBtn.setBackgroundResource(R.drawable.pause);
-
                     }
                     break;
                 case R.id.lrc_pre_btn:
                     musicService.preSongPlay();
                     setPlayBtnDrawable();
                     setFragment();
+                    setToolBarInfo();
                     break;
                 case R.id.lrc_next_btn:
                     musicService.nextSongPlay();
                     setPlayBtnDrawable();
                     setFragment();
+                    setToolBarInfo();
                     break;
                 case R.id.lrc_mode_btn:
                     musicService.setPlayMode();//改变播放状态
                     int playMode = musicService.getPlayMode();
                     if(playMode == musicService.SINGLE_MODE){
                         modeBtn.setBackgroundResource(R.drawable.single);
-                        Log.i("LrcUi","Single");
+                        Log.i("LrcUi", "Single");
+                        Toast.makeText(getApplicationContext(),"单曲循环",Toast.LENGTH_SHORT).show();
                     }
                     else if(playMode==musicService.RANDOM_MODE){
                         modeBtn.setBackgroundResource(R.drawable.random);
                         Log.i("LrcUi", "Random");
+                        Toast.makeText(getApplicationContext(),"随机播放",Toast.LENGTH_SHORT).show();
                     }
                     else{
                         modeBtn.setBackgroundResource(R.drawable.list_circle);
                         Log.i("LrcUi", "Circle");
+                        Toast.makeText(getApplicationContext(),"列表循环",Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
         }
     };
+    /**
+     * 设置菜单栏的歌曲歌手显示
+     */
+    public void setToolBarInfo(){
+        int index = musicService.getPlayIndex();
+        Song song = musicService.getSongList().get(index);
+        toolBarSongText.setText(song.getTitle());
+        toolBarSingerText.setText(song.getArtist());
+    }
     /**
      * 设置Fragment
      */
@@ -252,6 +273,7 @@ public class LrcUi extends AppCompatActivity{
             String str = intent.getStringExtra("complete");
             if(str.equals("complete")){
                 setFragment();//代表自动播放完一首歌需要更新歌词界面
+                setToolBarInfo();
             }
         }
     }

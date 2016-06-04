@@ -1,67 +1,81 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.hersch.helloui.MusicFragment">
+
     <TextView
         android:id="@+id/music_tip_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:textSize="15dp"
         android:gravity="center"
         android:text="本地歌曲"
-        android:textColor="@android:color/darker_gray"/>
+        android:textColor="@android:color/darker_gray"
+        android:textSize="15dp" />
+
     <LinearLayout
-        android:background="@android:color/transparent"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/transparent">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
+
     <GridLayout
         android:id="@+id/music_play_bar"
-        android:columnCount="7"
-        android:orientation="horizontal"
-        android:layout_height="70dp"
         android:layout_width="match_parent"
-        android:background="@drawable/lrc_bg">
+        android:layout_height="70dp"
+        android:background="@drawable/lrc_bg"
+        android:columnCount="7"
+        android:orientation="horizontal">
+
         <ImageView
-            android:layout_columnSpan="1"
-            android:layout_width="60dp"
-            android:layout_margin="5dp"
             android:id="@+id/hello_album_image"
+            android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/bg"/>
+            android:layout_columnSpan="1"
+            android:layout_margin="5dp"
+            android:src="@drawable/bg" />
+
         <TextView
-            android:textColor="@color/white"
-            android:layout_margin="10dp"
+            android:id="@+id/songInfoText"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
             android:layout_columnSpan="4"
             android:layout_columnWeight="1"
-            android:textSize="15dp"
-            android:layout_height="match_parent"
-            android:layout_width="100dp"
+            android:layout_margin="10dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
             android:text="songnfo"
-            android:id="@+id/songInfoText"/>
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
         <Button
-            android:layout_margin="10dp"
-            android:layout_columnSpan="1"
-            android:background="@drawable/pause"
-            android:layout_gravity="center_vertical"
+            android:id="@+id/play_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/play_btn"/>
-        <Button
-            android:layout_margin="10dp"
             android:layout_columnSpan="1"
-            android:background="@drawable/next"
             android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/pause" />
+
+        <Button
+            android:id="@+id/next_play_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/next_play_btn" />
+            android:layout_columnSpan="1"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/next" />
     </GridLayout>
 
 </LinearLayout>

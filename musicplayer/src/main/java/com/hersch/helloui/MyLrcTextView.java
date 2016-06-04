@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ import java.util.List;
 public class MyLrcTextView extends TextView {
     private float width;        //歌词视图宽度
     private float height;       //歌词视图高度
-    private List<String>lrcContentList;
+    private ArrayList<String>lrcContentList;
     private Paint currentPaint; //当前画笔对象
     private Paint notCurrentPaint;  //非当前画笔对象
     private float textHeight = 75;  //文本高度
@@ -24,6 +26,8 @@ public class MyLrcTextView extends TextView {
     public MyLrcTextView(Context context) {
         super(context);
         initTextStyle();
+        lrcContentList = new ArrayList<>();
+        lrcContentList.clear();
     }
 
     public MyLrcTextView(Context context, AttributeSet attrs) {
@@ -35,7 +39,7 @@ public class MyLrcTextView extends TextView {
         super(context, attrs, defStyleAttr);
         initTextStyle();
     }
-    public void setLrcContentList(List<String>lrcContentList){
+    public void setLrcContentList(ArrayList<String>lrcContentList){
         this.lrcContentList = lrcContentList;
     }
     public void setIndex(int index){
@@ -84,9 +88,6 @@ public class MyLrcTextView extends TextView {
                 tempY = tempY + textHeight;
                 canvas.drawText(lrcContentList.get(i), width / 2, tempY, notCurrentPaint);
             }
-        }
-        else{
-            setText("木有歌词文件，赶紧去下载...");
         }
     }
 
