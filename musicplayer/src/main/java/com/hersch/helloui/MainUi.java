@@ -38,6 +38,7 @@ public class MainUi extends AppCompatActivity {
     private TextView nameText;
     private List<String> tabList;
     private List<Fragment> mFragmentList;
+    private CircleImageView circleImageView;
     private static final int MUSIC = 0;
     private static final int SEARCH = 1;
 
@@ -60,6 +61,13 @@ public class MainUi extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         nameText = (TextView) findViewById(R.id.nameText);
+        circleImageView = (CircleImageView)findViewById(R.id.navigationview_head_imageview);
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"选择图片暂未开发",Toast.LENGTH_SHORT).show();
+            }
+        });
         nameText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="240dp"
     android:background="@drawable/bg">
     <LinearLayout
@@ -8,7 +11,10 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <ImageView
+    <com.hersch.helloui.CircleImageView
+        app:civ_border_width="2dp"
+        app:civ_border_color="@android:color/darker_gray"
+        android:id="@+id/navigationview_head_imageview"
         android:layout_gravity="left"
         android:src="@drawable/tree"
         android:layout_width="100dp"
@@ -18,16 +24,16 @@
         android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        android:text="Hersch"
-        android:textSize="30dp"/>
+        android:textColor="@android:color/black"
+        android:text="未登录"
+        android:textSize="20dp"/>
     </LinearLayout>
     <TextView
         android:id="@+id/nameText"
         android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/darker_gray"
-        android:text="点击可修改个人签名"
+        android:textColor="@android:color/black"
+        android:text="个人签名"
         android:textSize="20dp"/>
 </LinearLayout>
