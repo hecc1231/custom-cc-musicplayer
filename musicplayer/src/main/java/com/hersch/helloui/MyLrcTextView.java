@@ -71,7 +71,6 @@ public class MyLrcTextView extends TextView {
 
         notCurrentPaint.setTextSize(textSize);
         notCurrentPaint.setTypeface(Typeface.DEFAULT);
-        setText("");
         if(lrcContentList.size()>0) {
             canvas.drawText(lrcContentList.get(index), width / 2, height / 2, currentPaint);
             float tempY = height / 2;
@@ -90,7 +89,6 @@ public class MyLrcTextView extends TextView {
             }
         }
     }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);

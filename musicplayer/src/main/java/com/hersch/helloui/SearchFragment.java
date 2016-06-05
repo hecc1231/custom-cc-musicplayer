@@ -30,7 +30,6 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 if(songText.getText()!=null){
                     String songName = songText.getText().toString();
-
                 }
             }
         });

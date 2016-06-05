@@ -93,6 +93,7 @@ public class LrcUi extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 setFragment();
+                Log.i("LrcUi","OnClick");
             }
         });
         setSupportActionBar(toolbar);
@@ -256,7 +257,6 @@ public class LrcUi extends AppCompatActivity{
         //修改当前歌曲的专辑照片
         //.........
         //
-
         transaction.replace(R.id.sub_fragment, contentFragment);
         //transaction.addToBackStack(null);//即将被代替的界面放入栈中保证回退
         transaction.commit();
