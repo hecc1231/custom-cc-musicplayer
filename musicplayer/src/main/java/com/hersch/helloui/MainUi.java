@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,6 +52,7 @@ public class MainUi extends AppCompatActivity {
         initTabPagerList();
         Intent intent = new Intent(MainUi.this,MusicService.class);
         startService(intent);
+        Log.i("MainUi","OnCreate");
     }
 
     void initViews()//初始化组件

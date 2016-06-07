@@ -1,12 +1,12 @@
 package com.hersch.helloui;
 
 
-
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
 import android.widget.SeekBar;
@@ -39,7 +40,7 @@ import java.util.Date;
 /**
  * 歌词界面
  */
-public class LrcUi extends AppCompatActivity{
+public class LrcUi extends AppCompatActivity {
     private Toolbar toolbar;//菜单栏
     private SeekBar seekBar;//进度条
     private TextView toolBarSingerText;
@@ -50,18 +51,16 @@ public class LrcUi extends AppCompatActivity{
     private Button modeBtn;//播放模式
     private Button preBtn;//播放上一首
     private Button playBtn;//播放暂停按钮
-    private ImageView albumImageView;//专辑画面
-    private LrcContentFragment contentFragment;
+    private Button shareBtn;//分享按钮
+    private LrcAlbumImageFragment mLrcAlbumImageFragment;
     private MusicService musicService;//后台服务实例
-    private MyReceiveBroadcast  myBroadcastReceiver;
-    private final int SEEKBAR_CURRENT_POSITION = 0;
+    private MyReceiveBroadcast myBroadcastReceiver;
+    private final int SEEKBAR_MSG = 0;
     public static final String BROADCAST_ACTION = "com.hersch.helloui.LrcUi";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //还原上一次Activity的播放模式
-        Log.i("LrcUi","OnCreate");
         LayoutInflater layoutInflater = getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.activity_lrc_ui, null);
         setContentView(view);
@@ -69,33 +68,27 @@ public class LrcUi extends AppCompatActivity{
         registerBroadcast();
         initView();
     }
+
     /**
      * 初始化组件
      */
-    public void initView(){
-        toolBarSingerText = (TextView)findViewById(R.id.lrc_toolbar_singer_text);
-        toolBarSongText = (TextView)findViewById(R.id.lrc_toolbar_song_text);
-        seekBar = (SeekBar)findViewById(R.id.seekBar);
+    public void initView() {
+        toolBarSingerText = (TextView) findViewById(R.id.lrc_toolbar_singer_text);
+        toolBarSongText = (TextView) findViewById(R.id.lrc_toolbar_song_text);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setMax(100);
-        toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.lrc_toolbar);
-        albumImageView = (ImageView)findViewById(R.id.album_image);
-        seekBarStartText = (TextView)findViewById(R.id.seekbar_start_text);
-        seekBarEndText = (TextView)findViewById(R.id.seekbar_end_text);
-        preBtn = (Button)findViewById(R.id.lrc_pre_btn);
-        nextBtn = (Button)findViewById(R.id.lrc_next_btn);
-        modeBtn = (Button)findViewById(R.id.lrc_mode_btn);
-        playBtn = (Button)findViewById(R.id.lrc_play_btn);
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.lrc_toolbar);
+        shareBtn = (Button)findViewById(R.id.lrc_share_btn);
+        seekBarStartText = (TextView) findViewById(R.id.seekbar_start_text);
+        seekBarEndText = (TextView) findViewById(R.id.seekbar_end_text);
+        preBtn = (Button) findViewById(R.id.lrc_pre_btn);
+        nextBtn = (Button) findViewById(R.id.lrc_next_btn);
+        modeBtn = (Button) findViewById(R.id.lrc_mode_btn);
+        playBtn = (Button) findViewById(R.id.lrc_play_btn);
         preBtn.setOnClickListener(btnClickListener);
         nextBtn.setOnClickListener(btnClickListener);
         modeBtn.setOnClickListener(btnClickListener);
         playBtn.setOnClickListener(btnClickListener);
-        albumImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFragment();
-                Log.i("LrcUi","OnClick");
-            }
-        });
         setSupportActionBar(toolbar);
         setHomeBtnEnable();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -108,7 +101,6 @@ public class LrcUi extends AppCompatActivity{
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
@@ -116,7 +108,14 @@ public class LrcUi extends AppCompatActivity{
                 musicService.seekToPosition(seekBar.getProgress() * musicService.getTotalTime() / 100);//将歌曲播放进度更新
             }
         });
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"分享功能暂未开放",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
     /**
      * 再次返回该Activity时复原模式按钮的状态
      */
@@ -134,32 +133,36 @@ public class LrcUi extends AppCompatActivity{
                 break;
         }
     }
-    public MusicService getService(){
+
+    public MusicService getService() {
         return this.musicService;
     }
-    public void bindToService(){
+
+    public void bindToService() {
         Intent intent = new Intent(LrcUi.this, MusicService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
+
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicService.MyBinder myBinder= (MusicService.MyBinder)service;
+            MusicService.MyBinder myBinder = (MusicService.MyBinder) service;
             musicService = myBinder.getService();//获取歌曲服务
             setPlayBtnDrawable();//根据当前播放状态初始化play按钮的状态图
             setToolBarInfo();
+            setDefaultFragment();//根据musicSevice获取当前的歌词与专辑图片
             backToModeBtn();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while(true) {
-                        if(musicService.isPlaying()) {
+                    while (true) {
+                        if (musicService.isPlaying()) {
                             int position = musicService.getCurrentPosition();
                             int totalTime = musicService.getTotalTime();
                             Message message = new Message();
                             message.arg1 = position;
                             message.arg2 = totalTime;
-                            message.what = SEEKBAR_CURRENT_POSITION;
+                            message.what = SEEKBAR_MSG;
                             handler.sendMessage(message);
                             try {
                                 Thread.sleep(1000);
@@ -174,32 +177,31 @@ public class LrcUi extends AppCompatActivity{
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            Log.i("LrcUi","Service Disconnected");
         }
     };
 
     /**
      * 设置play按钮的状态图
      */
-    public void setPlayBtnDrawable(){
-        if(musicService.isPlaying()){
+    public void setPlayBtnDrawable() {
+        if (musicService.isPlaying()) {
             playBtn.setBackgroundResource(R.drawable.pause);
-        }
-        else{
+        } else {
             playBtn.setBackgroundResource(R.drawable.play);
         }
     }
+
     View.OnClickListener btnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.lrc_play_btn:
                     //0代表正在播放
-                    if(musicService.isPlaying()) {
+                    if (musicService.isPlaying()) {
                         musicService.stopPlay();
                         playBtn.setBackgroundResource(R.drawable.play);
-                    }
-                    else {
+                    } else {
                         musicService.continuePlay();
                         playBtn.setBackgroundResource(R.drawable.pause);
                     }
@@ -207,41 +209,40 @@ public class LrcUi extends AppCompatActivity{
                 case R.id.lrc_pre_btn:
                     musicService.preSongPlay();
                     setPlayBtnDrawable();
-                    setFragment();
+                    setDefaultFragment();
                     setToolBarInfo();
                     break;
                 case R.id.lrc_next_btn:
                     musicService.nextSongPlay();
                     setPlayBtnDrawable();
-                    setFragment();
+                    setDefaultFragment();
                     setToolBarInfo();
                     break;
                 case R.id.lrc_mode_btn:
                     musicService.setPlayMode();//改变播放状态
                     int playMode = musicService.getPlayMode();
-                    if(playMode == musicService.SINGLE_MODE){
+                    if (playMode == musicService.SINGLE_MODE) {
                         modeBtn.setBackgroundResource(R.drawable.single);
                         Log.i("LrcUi", "Single");
-                        Toast.makeText(getApplicationContext(),"单曲循环",Toast.LENGTH_SHORT).show();
-                    }
-                    else if(playMode==musicService.RANDOM_MODE){
+                        Toast.makeText(getApplicationContext(), "单曲循环", Toast.LENGTH_SHORT).show();
+                    } else if (playMode == musicService.RANDOM_MODE) {
                         modeBtn.setBackgroundResource(R.drawable.random);
                         Log.i("LrcUi", "Random");
-                        Toast.makeText(getApplicationContext(),"随机播放",Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                        Toast.makeText(getApplicationContext(), "随机播放", Toast.LENGTH_SHORT).show();
+                    } else {
                         modeBtn.setBackgroundResource(R.drawable.list_circle);
                         Log.i("LrcUi", "Circle");
-                        Toast.makeText(getApplicationContext(),"列表循环",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "列表循环", Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
         }
     };
+
     /**
      * 设置菜单栏的歌曲歌手显示
      */
-    public void setToolBarInfo(){
+    public void setToolBarInfo() {
         int index = musicService.getPlayIndex();
         Song song = musicService.getSongList().get(index);
         toolBarSongText.setText(song.getTitle());
@@ -250,43 +251,48 @@ public class LrcUi extends AppCompatActivity{
     /**
      * 设置Fragment
      */
-    public void setFragment(){
-        FragmentManager fragmentManager =getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        contentFragment = new LrcContentFragment();
-        //修改当前歌曲的专辑照片
-        //.........
-        //
-        transaction.replace(R.id.sub_fragment, contentFragment);
-        //transaction.addToBackStack(null);//即将被代替的界面放入栈中保证回退
-        transaction.commit();
+    public void setDefaultFragment() {
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        FragmentTransaction mTransaction = mFragmentManager.beginTransaction();
+        mLrcAlbumImageFragment = new LrcAlbumImageFragment();
+        mTransaction.replace(R.id.sub_fragment, mLrcAlbumImageFragment);
+        mTransaction.commitAllowingStateLoss();
+        //mTransaction.commit();
+        //commit与commitAllowingStateLoss区别在于commitAllowingStateLoss允许在Activity保存完状态后即执行完OnSaveInstance后
+        // 继续提交事务，而commit如果在OnSaveInstance执行完后再提交事务则会报错
+        //尽量将提交事务的操作置于保存状态之前
+        //OnSaveInStance在OnPause()期间执行
     }
-    public void registerBroadcast(){
+    public void registerBroadcast() {
         myBroadcastReceiver = new MyReceiveBroadcast();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BROADCAST_ACTION);
         registerReceiver(myBroadcastReceiver, intentFilter);
     }
-    class MyReceiveBroadcast extends BroadcastReceiver{
+
+    class MyReceiveBroadcast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String str = intent.getStringExtra("complete");
-            if(str.equals("complete")){
-                setFragment();//代表自动播放完一首歌需要更新歌词界面
+            if (str.equals("complete")) {
+                musicService.nextSongPlay();
+                setDefaultFragment();//代表在熄屏情况下再启动更新Fragment
                 setToolBarInfo();
             }
         }
     }
+
     /**
      * 设置返回键
      */
-    public void setHomeBtnEnable(){
+    public void setHomeBtnEnable() {
         getSupportActionBar().setDisplayShowHomeEnabled(true);//设置左上角可见图标
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
         }
@@ -297,14 +303,16 @@ public class LrcUi extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
-    Handler handler = new Handler(){
+
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case SEEKBAR_CURRENT_POSITION:
+            switch (msg.what) {
+                //进度条消息
+                case SEEKBAR_MSG:
                     int currentPosition = msg.arg1;
                     int totalTime = msg.arg2;
-                    seekBar.setProgress(currentPosition*100/totalTime);
+                    seekBar.setProgress(currentPosition * 100 / totalTime);
                     SimpleDateFormat sDateFormat = new SimpleDateFormat("mm:ss");
                     String endTime = sDateFormat.format(new Date(totalTime));
                     String currentTime = sDateFormat.format(new Date(currentPosition));
@@ -325,7 +333,7 @@ public class LrcUi extends AppCompatActivity{
     protected void onDestroy() {
         unbindService(serviceConnection);
         unregisterReceiver(myBroadcastReceiver);
-        Log.i("LrcUi","Destroy");
+        Log.i("LrcUi", "Destroy");
         super.onDestroy();
     }
 }

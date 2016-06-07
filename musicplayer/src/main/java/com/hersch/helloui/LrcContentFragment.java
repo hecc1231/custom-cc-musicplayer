@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,15 @@ public class LrcContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.lrc_fragment_content, container, false);
         findViews(view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+                mFragmentTransaction.replace(R.id.sub_fragment, new LrcAlbumImageFragment());
+                mFragmentTransaction.commit();
+            }
+        });
         return view;
     }
 
@@ -230,46 +240,49 @@ public class LrcContentFragment extends Fragment {
                 url = new URL("http://qqmusic.qq.com/fcgi-bin/qm_getLyricId.fcg?name=" + URLEncoder.encode(song.getTitle(), "gbk")
                         + "&singer=" + URLEncoder.encode(song.getArtist(), "gbk") + "&from=qqplayer");
                 httpURLConnection = (HttpURLConnection) url.openConnection();
-                String lyricStr = getXMLFromURL(httpURLConnection);
-                int count = countLyric(lyricStr);//获得歌词版本的数量
-                if (count == 0) {
-                    Message msg = new Message();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("error", "no lyric found");
-                    msg.setData(bundle);
-                    msg.what = MSG_ERROR;
-                    handler.sendMessage(msg);
-                    return;
-                } else {
-                    while (count > 0) {
-                        int startIndex = lyricStr.indexOf("songinfo");
-                        int dotStartIndex = lyricStr.indexOf("\"", startIndex);
-                        int dotEndIndex = lyricStr.indexOf("\"", dotStartIndex + 1);
-                        String strId = lyricStr.substring(dotStartIndex + 1, dotEndIndex);
-                        int id = Integer.parseInt(strId);
-                        lyricStr = lyricStr.substring(dotEndIndex + 1);//将扫描过的歌词剪去
+                httpURLConnection.setRequestMethod("GET");
+                if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_OK) {
+                    String lyricStr = getXMLFromURL(httpURLConnection);
+                    int count = countLyric(lyricStr);//获得歌词版本的数量
+                    if (count == 0) {
+                        Message msg = new Message();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("error", "no lyric found");
+                        msg.setData(bundle);
+                        msg.what = MSG_ERROR;
+                        handler.sendMessage(msg);
+                        return;
+                    } else {
+                        while (count > 0) {
+                            int startIndex = lyricStr.indexOf("songinfo");
+                            int dotStartIndex = lyricStr.indexOf("\"", startIndex);
+                            int dotEndIndex = lyricStr.indexOf("\"", dotStartIndex + 1);
+                            String strId = lyricStr.substring(dotStartIndex + 1, dotEndIndex);
+                            int id = Integer.parseInt(strId);
+                            lyricStr = lyricStr.substring(dotEndIndex + 1);//将扫描过的歌词剪去
 
-                        //http://music.qq.com/miniportal/static/lyric/歌曲ID求余100/歌曲ID.xml
-                        //获取歌词的xml文件
-                        url = new URL("http://music.qq.com/miniportal/static/lyric/" + id % 100 + "/" + id + ".xml");
-                        httpURLConnection = (HttpURLConnection) url.openConnection();
-                        lrcContentList = getDataFromURL(httpURLConnection);
-                        //找到最合适的歌词则发送给歌词界面并跳出
-                        if (lrcContentList.size() >= CONTENT_MIN_SIZE) {
-                            Message msg = new Message();
-                            msg.what = MSG_SUCCESS;
-                            handler.sendMessage(msg);
-                            return;
+                            //http://music.qq.com/miniportal/static/lyric/歌曲ID求余100/歌曲ID.xml
+                            //获取歌词的xml文件
+                            url = new URL("http://music.qq.com/miniportal/static/lyric/" + id % 100 + "/" + id + ".xml");
+                            httpURLConnection = (HttpURLConnection) url.openConnection();
+                            lrcContentList = getDataFromURL(httpURLConnection);
+                            //找到最合适的歌词则发送给歌词界面并跳出
+                            if (lrcContentList.size() >= CONTENT_MIN_SIZE) {
+                                Message msg = new Message();
+                                msg.what = MSG_SUCCESS;
+                                handler.sendMessage(msg);
+                                return;
+                            }
+                            count--;
+                            timeList.clear();
+                            lrcContentList.clear();
                         }
-                        count--;
-                        timeList.clear();
-                        lrcContentList.clear();
+                        //未找到歌词返回error
+                        Message msg = new Message();
+                        msg.what = MSG_ERROR;
+                        handler.sendMessage(msg);
+                        return;
                     }
-                    //未找到歌词返回error
-                    Message msg = new Message();
-                    msg.what = MSG_ERROR;
-                    handler.sendMessage(msg);
-                    return;
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();

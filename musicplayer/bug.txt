@@ -1,0 +1,34 @@
+1.对于歌词同步，利用当前播放的进度找到与时间戳对应的歌词所在行，将歌词所在索引以及歌词列表传入自定义TextView，从而绘制当前行，
+在绘制其他歌词行，达到同步歌词的目的
+
+2.musicService存储的是歌词列表，当前歌词索引
+
+3.将存储歌词的列表和时间戳列表放在LrcContentGetter中，因为每次跳转到歌词Fragment都会重新创造一个Fragment，也就是重新
+加载歌词类LrcContentGetter，自动清空之前的歌词和时间戳
+
+4.toolBar的样式
+1)ThemeOverlay.AppCompat.Dark.ActionBar  是全部为白色，包括文字和按钮
+
+ <android.support.v7.widget.Toolbar
+        android:id="@+id/lrc_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+ </android.support.v7.widget.Toolbar>
+2)一般自定义ToolBar都是在style.xml中继承一种theme，一般继承AppCompat.NoActionBar
+3)然后设置一些属性包括<item name="colorPrimary"> </item>'
+4)如果想要设置Toolbar没有标题需要在style.xml中设置<item name="windowsNoTitle">true</item>
+
+5.对于自定义的TextView
+1)盲点，存储歌词的列表需要在TextView申明时就new一个List,以防后面出现空指针,因为重绘在ondraw函数进行，必须保证绘制的列表不为空对象，切记
+2)根据当前歌曲的时间戳确定当前的歌词行数，从而将当前的行数也就是index画在中间，其余依次上下绘制
+3)重绘调用 invalidate调用ondraw()
+
+6.关于点击TextView会出现闪烁是因为前一个Fragment设计了点击事件，导致后期覆盖的Fragment依旧有点击事件。因此点击一次TextView就相当于
+换了一次Fragment，导致Handler重新向消息池提交了消息，导致消息加倍
+1)记得handler.postDeleay(Runnable,long time)在Activity关闭时候需要调用removeCallbacks(Runnable)关闭计时器，否则将会一直存在
+2)关于点击事件，后期的TextView需要在xml设置android:clickable=true 来达到屏蔽下层的fragment点击事件，从而不会受之前的fragment点击事件的影响
+
+7.在LrcUi界面黑屏情况下自动播放下一首更新专辑图片Fragment会出现异常，返回到MainUi(原因 提交事务在OnStop之后，因为OnStop之前的状态已经
+通过OnSaveInstance保存，因此在Onstop后执行的提交事务操作是不安全的，因此尽量要在OnSaveIntance调用之前执行提交事务的操作)
+解决办法: 将更新专辑图片Fragment的操作放在OnStart()
