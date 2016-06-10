@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/lrc_bg"
     android:orientation="vertical"
-    tools:context="com.hersch.helloui.LrcUi">
+    tools:context="com.miniccmusicplayer.ui.LrcActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/lrc_toolbar"

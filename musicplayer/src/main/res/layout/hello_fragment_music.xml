@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.hersch.helloui.MusicFragment">
+    tools:context="com.miniccmusicplayer.ui.MainMusicFragment">
 
     <TextView
         android:id="@+id/music_tip_text"
@@ -36,7 +36,7 @@
         android:columnCount="7"
         android:orientation="horizontal">
 
-        <com.hersch.helloui.CircleImageView
+        <com.miniccmusicplayer.view.CircleImageView
             app:civ_border_color="@android:color/darker_gray"
             app:civ_border_width="2dp"
             android:id="@+id/hello_album_image"

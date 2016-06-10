@@ -1,4 +1,4 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,12 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
-import com.hersch.adapter.PagerAdapter;
+import com.miniccmusicplayer.adapter.PagerAdapter;
+import com.miniccmusicplayer.view.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainUi extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -50,7 +51,7 @@ public class MainUi extends AppCompatActivity {
         initViews();
         setDrawerLayout();
         initTabPagerList();
-        Intent intent = new Intent(MainUi.this,MusicService.class);
+        Intent intent = new Intent(MainActivity.this,MusicService.class);
         startService(intent);
         Log.i("MainUi","OnCreate");
     }
@@ -73,9 +74,9 @@ public class MainUi extends AppCompatActivity {
         nameText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = LayoutInflater.from(MainUi.this).inflate(R.layout.drawer_alertdialg, null);
+                View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.drawer_alertdialg, null);
                 final EditText nameEdit = (EditText) view.findViewById(R.id.name_edit);
-                new AlertDialog.Builder(MainUi.this).setTitle("请输入").setIcon(
+                new AlertDialog.Builder(MainActivity.this).setTitle("请输入").setIcon(
                         R.drawable.search).setView(view).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -131,8 +132,8 @@ public class MainUi extends AppCompatActivity {
 
         //init viewLists
         mFragmentList = new ArrayList<>();
-        mFragmentList.add(new MusicFragment());
-        mFragmentList.add(new SearchFragment());
+        mFragmentList.add(new MainMusicFragment());
+        mFragmentList.add(new MainSearchFragment());
         //set the Mode
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         //add Tab into TabLayout

@@ -1,10 +1,8 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.ui;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,7 @@ import com.example.hersch.musicplayer.R;
 /**
  * search lyrics Page
  */
-public class SearchFragment extends Fragment {
+public class MainSearchFragment extends Fragment {
     private Context context;
     private Button searchBtn;
     private EditText songText;

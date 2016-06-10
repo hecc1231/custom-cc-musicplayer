@@ -1,11 +1,10 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.service.voice.VoiceInteractionService;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
-import com.hersch.songobject.Song;
+import com.miniccmusicplayer.bean.Song;
+import com.miniccmusicplayer.view.CircleImageView;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

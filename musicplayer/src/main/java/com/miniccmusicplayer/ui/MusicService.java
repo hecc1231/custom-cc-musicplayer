@@ -1,4 +1,4 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.ui;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,12 +10,10 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.hersch.songobject.Song;
+import com.miniccmusicplayer.bean.Song;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -49,7 +47,7 @@ public class MusicService extends Service{
             @Override
             public void onCompletion(MediaPlayer mp) {
                 nextSongPlay();
-                Intent intent = new Intent(LrcUi.BROADCAST_ACTION);
+                Intent intent = new Intent(LrcActivity.BROADCAST_ACTION);
                 Bundle bundle = new Bundle();
                 bundle.putString("complete", "complete");
                 intent.putExtras(bundle);

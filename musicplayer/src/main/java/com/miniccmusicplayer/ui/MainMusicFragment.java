@@ -1,4 +1,4 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.ui;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,9 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
-import com.hersch.adapter.RecyclerAdapter;
+import com.miniccmusicplayer.adapter.RecyclerAdapter;
+import com.miniccmusicplayer.bean.TestItemDecoraton;
 
-public class MusicFragment extends Fragment {
+public class MainMusicFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private GridLayout playBarGridLayout;
@@ -179,7 +180,7 @@ public class MusicFragment extends Fragment {
         playBarGridLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),LrcUi.class);
+                Intent intent = new Intent(getActivity(),LrcActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("song",musicService.getSongList().get(musicService.getPlayIndex()));
                 intent.putExtras(bundle);

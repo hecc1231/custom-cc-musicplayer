@@ -1,4 +1,4 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

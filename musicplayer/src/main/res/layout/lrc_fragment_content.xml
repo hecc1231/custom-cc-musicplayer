@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:background="@drawable/lrc_bg"
     android:layout_height="match_parent">
-    <com.hersch.helloui.MyLrcTextView
+    <com.miniccmusicplayer.view.MyLrcTextView
         android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

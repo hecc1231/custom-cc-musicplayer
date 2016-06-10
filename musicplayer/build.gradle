@@ -4,7 +4,6 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
     //兼容Android6.0系统所需，如果这句话报错，可在dependencies标签下使用compile 'cn.bmob.android:http-legacy:1.0'**
-    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.example.hersch.musicplayer"
@@ -14,7 +13,9 @@ android {
         versionName "1.0"
     }
     sourceSets {
-        main.jniLibs.srcDirs = ['libs']
+        main() {
+            jniLibs.srcDirs = ['libs']
+        }
     }
     buildTypes {
         release {
@@ -30,7 +31,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
-    compile files('libs/BmobSDK_V3.4.7_0527.jar')
-    compile files('libs/okhttp-3.2.0.jar')
-    compile files('libs/okio-1.7.0.jar')
 }

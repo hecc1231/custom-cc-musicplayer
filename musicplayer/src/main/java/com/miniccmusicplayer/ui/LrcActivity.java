@@ -1,4 +1,4 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.ui;
 
 
 import android.content.BroadcastReceiver;
@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -21,26 +20,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
-import com.hersch.songobject.Song;
-
-import org.w3c.dom.Text;
+import com.miniccmusicplayer.bean.Song;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * 歌词界面
  */
-public class LrcUi extends AppCompatActivity {
+public class LrcActivity extends AppCompatActivity {
     private Toolbar toolbar;//菜单栏
     private SeekBar seekBar;//进度条
     private TextView toolBarSingerText;
@@ -139,7 +133,7 @@ public class LrcUi extends AppCompatActivity {
     }
 
     public void bindToService() {
-        Intent intent = new Intent(LrcUi.this, MusicService.class);
+        Intent intent = new Intent(LrcActivity.this, MusicService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 

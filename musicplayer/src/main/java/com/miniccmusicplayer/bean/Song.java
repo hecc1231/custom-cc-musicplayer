@@ -1,7 +1,6 @@
-package com.hersch.songobject;
+package com.miniccmusicplayer.bean;
 
 import java.io.Serializable;
-import java.net.URI;
 
 /**
  * Created by Hersch on 2016/3/26.

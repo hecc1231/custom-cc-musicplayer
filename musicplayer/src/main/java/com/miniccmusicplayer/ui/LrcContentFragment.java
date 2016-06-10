@@ -1,6 +1,5 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.ui;
 
-import android.app.Service;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
@@ -14,11 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
-import com.hersch.songobject.Song;
+import com.miniccmusicplayer.bean.Song;
+import com.miniccmusicplayer.view.MyLrcTextView;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -28,7 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -93,12 +91,12 @@ public class LrcContentFragment extends Fragment {
      * 获取歌词
      */
     public void searchLrcThread() {
-        LrcUi lrcUi = (LrcUi) getActivity();
+        LrcActivity lrcUi = (LrcActivity) getActivity();
         musicService = lrcUi.getService();
         int index = musicService.getPlayIndex();
         //联网
         if (detectNet(lrcUi.getApplicationContext())) {
-            musicService = ((LrcUi) getActivity()).getService();
+            musicService = ((LrcActivity) getActivity()).getService();
             song = musicService.getSongList().get(index);
             mLrcContentGetter = new LrcContentGetter();//获取歌词类
             mLrcContentGetter.start();//开启线程
@@ -176,11 +174,15 @@ public class LrcContentFragment extends Fragment {
      * @return
      */
     public static boolean ping() {
-        int result = 0;
+        int result = 1;
         try {
-            URL url = new URL("http://www.baidu.com");
+            URL url = new URL("http://qqmusic.qq.com/fcgi-bin/qm_getLyricId.fcg?name=" + URLEncoder.encode("爱夏", "gbk")
+                    + "&singer=" + URLEncoder.encode("胡夏", "gbk") + "&from=qqplayer");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            result = 0;
+            httpURLConnection.setRequestMethod("GET");
+            if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_OK) {
+                result = 0;
+            }
         } catch (IOException e) {
             Log.i("ping", "ping is error");
             result = 1;

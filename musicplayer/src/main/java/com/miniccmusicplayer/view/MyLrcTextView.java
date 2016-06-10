@@ -1,4 +1,4 @@
-package com.hersch.helloui;
+package com.miniccmusicplayer.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Hersch on 2016/5/28.

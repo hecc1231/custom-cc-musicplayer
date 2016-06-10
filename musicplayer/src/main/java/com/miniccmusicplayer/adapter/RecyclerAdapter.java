@@ -1,4 +1,4 @@
-package com.hersch.adapter;
+package com.miniccmusicplayer.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.hersch.musicplayer.R;
-import com.hersch.songobject.Song;
+import com.miniccmusicplayer.bean.Song;
 
 import java.util.List;
 
