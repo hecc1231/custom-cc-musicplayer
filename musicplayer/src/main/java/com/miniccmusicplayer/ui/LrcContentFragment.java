@@ -94,10 +94,9 @@ public class LrcContentFragment extends Fragment {
         LrcActivity lrcUi = (LrcActivity) getActivity();
         musicService = lrcUi.getService();
         int index = musicService.getPlayIndex();
+        song = musicService.getSongList().get(index);
         //联网
         if (detectNet(lrcUi.getApplicationContext())) {
-            musicService = ((LrcActivity) getActivity()).getService();
-            song = musicService.getSongList().get(index);
             mLrcContentGetter = new LrcContentGetter();//获取歌词类
             mLrcContentGetter.start();//开启线程
         } else {
@@ -107,6 +106,7 @@ public class LrcContentFragment extends Fragment {
             lrcText.invalidate();
         }
     }
+
     Runnable updateLrcRunnable = new Runnable() {
         @Override
         public void run() {
@@ -148,7 +148,7 @@ public class LrcContentFragment extends Fragment {
      * @param context
      * @return
      */
-    public static boolean detectNet(Context context) {
+    public boolean detectNet(Context context) {
         try {
             // 获取连接管理对象
             ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -173,19 +173,14 @@ public class LrcContentFragment extends Fragment {
      *
      * @return
      */
-    public static boolean ping() {
+    public boolean ping() {
         int result = 1;
         try {
-            URL url = new URL("http://qqmusic.qq.com/fcgi-bin/qm_getLyricId.fcg?name=" + URLEncoder.encode("爱夏", "gbk")
-                    + "&singer=" + URLEncoder.encode("胡夏", "gbk") + "&from=qqplayer");
+            URL url = new URL("http://www.baidu.com");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("GET");
-            if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_OK) {
-                result = 0;
-            }
+            result = 0;
         } catch (IOException e) {
             Log.i("ping", "ping is error");
-            result = 1;
             e.printStackTrace();
         } finally {
             if (result == 1) {
@@ -243,7 +238,7 @@ public class LrcContentFragment extends Fragment {
                         + "&singer=" + URLEncoder.encode(song.getArtist(), "gbk") + "&from=qqplayer");
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("GET");
-                if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_OK) {
+                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     String lyricStr = getXMLFromURL(httpURLConnection);
                     int count = countLyric(lyricStr);//获得歌词版本的数量
                     if (count == 0) {

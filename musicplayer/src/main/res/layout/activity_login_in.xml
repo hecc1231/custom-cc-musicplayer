@@ -11,14 +11,19 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/holo_blue_dark"
         android:theme="@style/BaseTheme">
-
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:layout_marginLeft="20dp"
             android:text="@string/login_toolbar_text"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -34,7 +39,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/user" />
 
@@ -53,7 +58,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/pwd" />
 

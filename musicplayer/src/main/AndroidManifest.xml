@@ -12,14 +12,14 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/icon"
-        android:label="MiniCCPlayer"
+        android:label="MiniCC Player"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/BaseTheme">
         <service android:name="com.miniccmusicplayer.ui.MusicService" />
 
         <activity
             android:name="com.miniccmusicplayer.ui.MainActivity"
-            android:theme="@style/BaseTheme" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name="com.miniccmusicplayer.ui.LrcActivity"
             android:theme="@style/BaseTheme"></activity>

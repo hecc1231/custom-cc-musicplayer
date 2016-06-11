@@ -7,20 +7,23 @@
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
+        android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
         <EditText
             android:layout_width="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="1"
             android:hint="Search songs"
+            android:layout_gravity="bottom"
             android:layout_height="wrap_content"
-            android:id="@+id/songText"
-            android:background="@android:drawable/edit_text"/>
+            android:id="@+id/songText" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search"
+            android:text="搜索"
+            android:textColor="@color/white"
+            android:background="@android:color/holo_blue_dark"
             android:id="@+id/searchBtn"/>
     </LinearLayout>
     <TextView

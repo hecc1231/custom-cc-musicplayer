@@ -7,17 +7,18 @@
     tools:context="com.miniccmusicplayer.ui.RegisterActivity">
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/register_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/holo_blue_dark"
-        android:theme="@style/BaseTheme">
-
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/register_toolbar_text"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -34,7 +35,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/user" />
 
@@ -53,7 +54,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/pwd" />
 
@@ -68,13 +69,12 @@
 
         <LinearLayout
             android:layout_margin="10dp"
-            android:background="@drawable/edittext_bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/pwd" />
 
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/age" />
             <EditText

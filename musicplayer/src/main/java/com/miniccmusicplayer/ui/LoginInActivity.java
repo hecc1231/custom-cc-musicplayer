@@ -1,9 +1,11 @@
 package com.miniccmusicplayer.ui;
 
+import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import com.example.hersch.musicplayer.R;
 import com.miniccmusicplayer.bean.MyUser;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -20,6 +23,7 @@ public class LoginInActivity extends AppCompatActivity {
     private Button loginBtn;
     private EditText userEdit;
     private EditText pwdEdit;
+    public static boolean ENTER_MAIN = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,8 @@ public class LoginInActivity extends AppCompatActivity {
         loginBtn = (Button) findViewById(R.id.login_login_btn);
         registerBtn.setOnClickListener(listener);
         loginBtn.setOnClickListener(listener);
-        checkCurrentUser();
+        Bmob.initialize(getApplicationContext(),HelloActivity.APP_ID);
+        checkCurrentUser();//检查是否有当前用户
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -54,12 +59,15 @@ public class LoginInActivity extends AppCompatActivity {
      * 检测本地用户缓存
      */
     public void checkCurrentUser(){
-        BmobUser bmobUser = BmobUser.getCurrentUser(this, MyUser.class);
-        if (bmobUser!=null) {
-            String userName = bmobUser.getUsername();
-            String password = (String)BmobUser.getObjectByKey(getApplicationContext(),"password");
-            userEdit.setText(userName);
-            pwdEdit.setText(password);
+        MyUser myUser = BmobUser.getCurrentUser(getApplicationContext(), MyUser.class);
+        if (myUser!=null) {
+            if(ENTER_MAIN) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+            else{
+                userEdit.setText(myUser.getUsername());
+            }
         }
     }
     /**
@@ -83,11 +91,21 @@ public class LoginInActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(int i, String s) {
-                    Toast.makeText(getApplicationContext(), "用户名不存在或密码错误", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
             Toast.makeText(getApplicationContext(), "用户名不存在或密码错误", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            Intent home = new Intent(Intent.ACTION_MAIN);
+            home.addCategory(Intent.CATEGORY_HOME);
+            startActivity(home);
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

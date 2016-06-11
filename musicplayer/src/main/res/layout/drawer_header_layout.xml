@@ -5,35 +5,29 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="240dp"
-    android:background="@drawable/bg">
+    android:background="@android:color/holo_blue_dark">
     <LinearLayout
-        android:layout_margin="25dp"
-        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="40dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
     <com.miniccmusicplayer.view.CircleImageView
         app:civ_border_width="2dp"
         app:civ_border_color="@android:color/darker_gray"
         android:id="@+id/navigationview_head_imageview"
-        android:layout_gravity="left"
-        android:src="@drawable/tree"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        />
-    <TextView
+        android:gravity="left"
+        android:src="@drawable/user"
         android:layout_margin="20dp"
-        android:layout_width="match_parent"
+        android:layout_width="70dp"
+        android:layout_height="70dp" />
+    <TextView
+        android:id="@+id/na_view_user_text"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:typeface="serif"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
         android:text="未登录"
-        android:textSize="20dp"/>
+        android:textSize="25dp"/>
     </LinearLayout>
-    <TextView
-        android:id="@+id/nameText"
-        android:layout_margin="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:text="个人签名"
-        android:textSize="20dp"/>
 </LinearLayout>

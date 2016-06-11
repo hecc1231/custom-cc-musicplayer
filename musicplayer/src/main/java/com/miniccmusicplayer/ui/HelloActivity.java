@@ -18,7 +18,7 @@ import cn.bmob.v3.Bmob;
 public class HelloActivity extends AppCompatActivity {
     private Button jumpBtn;
     private Boolean isClick=false;
-    private String APP_ID = "69475bb35369ed3025472c387bdad390";
+    public static final String APP_ID = "69475bb35369ed3025472c387bdad390";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
