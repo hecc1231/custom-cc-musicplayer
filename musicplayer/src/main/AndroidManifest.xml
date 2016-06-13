@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hersch.musicplayer">
+    package="com.example.hersch.musicplayer" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,7 +14,7 @@
         android:icon="@mipmap/icon"
         android:label="MiniCC Player"
         android:supportsRtl="true"
-        android:theme="@style/BaseTheme">
+        android:theme="@style/AppTheme" >
         <service android:name="com.miniccmusicplayer.ui.MusicService" />
 
         <activity
@@ -22,10 +22,10 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name="com.miniccmusicplayer.ui.LrcActivity"
-            android:theme="@style/BaseTheme"></activity>
+            android:theme="@style/BaseTheme" />
         <activity
             android:name="com.miniccmusicplayer.ui.HelloActivity"
-            android:theme="@style/BaseTheme">
+            android:theme="@style/BaseTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,11 +33,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.miniccmusicplayer.ui.LoginInActivity"
-            android:theme="@style/BaseTheme"></activity>
+            android:name="com.miniccmusicplayer.ui.LoginActivity"
+            android:theme="@style/BaseTheme" />
         <activity
             android:name="com.miniccmusicplayer.ui.RegisterActivity"
-            android:theme="@style/BaseTheme"></activity>
+            android:theme="@style/BaseTheme" />
     </application>
 
 </manifest>

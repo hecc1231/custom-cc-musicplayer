@@ -41,7 +41,7 @@ public class LrcAlbumImageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.lrc_fragment_album_image, container, false);
+        View view = inflater.inflate(R.layout.lrc_frg_album_image, container, false);
         findViews(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override

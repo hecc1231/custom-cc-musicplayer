@@ -55,9 +55,19 @@ public class MusicService extends Service{
             }
         });
     }
+
+    /**
+     * 获取歌曲总数
+     * @return
+     */
     public int getSongNum() {
         return songList.size();
     }
+
+    /**
+     * 点击歌曲列表播放
+     * @param index
+     */
     public void onItemPlay(int index) {
         this.playIndex = index;
         try {
@@ -70,9 +80,17 @@ public class MusicService extends Service{
             e.printStackTrace();
         }
     }
+
+    /**
+     * 设置播放模式
+     */
     public void setPlayMode(){
         this.playMode = playMode<2?playMode+1:0;
     }
+
+    /**
+     * 播放前一首
+     */
     public void preSongPlay() {
         if(playMode == SINGLE_MODE){
             //
@@ -94,6 +112,11 @@ public class MusicService extends Service{
             e.printStackTrace();
         }
     }
+
+    /**
+     * 播放模式，单曲,循环，随机
+     * @return
+     */
     public int getPlayMode(){
         return playMode;
     }
@@ -101,6 +124,9 @@ public class MusicService extends Service{
         return musicPlayer.getCurrentPosition();
     }
 
+    /**
+     * 播放下一首歌曲
+     */
     public void nextSongPlay() {
         if(playMode == SINGLE_MODE){
             //
@@ -122,9 +148,19 @@ public class MusicService extends Service{
             e.printStackTrace();
         }
     }
+
+    /**
+     * 获取当前播放歌曲的总时长
+     * @return
+     */
     public int getTotalTime(){
         return musicPlayer.getDuration();
     }
+
+    /**
+     * 当前歌曲播放点
+     * @param postion
+     */
     public void seekToPosition(int postion){
         musicPlayer.seekTo(postion);
     }
@@ -184,5 +220,10 @@ public class MusicService extends Service{
         {
             return MusicService.this;
         }
+    }
+    @Override
+    public void onDestroy() {
+        Log.i("MusicService","OnDestory");
+        super.onDestroy();
     }
 }

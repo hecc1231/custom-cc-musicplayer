@@ -12,8 +12,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +38,7 @@ import java.util.Date;
  */
 public class LrcActivity extends AppCompatActivity {
     private Toolbar toolbar;//菜单栏
+    private ShareActionProvider mShareActionProvider;
     private SeekBar seekBar;//进度条
     private TextView toolBarSingerText;
     private TextView toolBarSongText;
@@ -45,7 +48,6 @@ public class LrcActivity extends AppCompatActivity {
     private Button modeBtn;//播放模式
     private Button preBtn;//播放上一首
     private Button playBtn;//播放暂停按钮
-    private Button shareBtn;//分享按钮
     private LrcAlbumImageFragment mLrcAlbumImageFragment;
     private MusicService musicService;//后台服务实例
     private MyReceiveBroadcast myBroadcastReceiver;
@@ -56,7 +58,7 @@ public class LrcActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater layoutInflater = getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.activity_lrc_ui, null);
+        View view = layoutInflater.inflate(R.layout.activity_lrc, null);
         setContentView(view);
         bindToService();
         registerBroadcast();
@@ -72,7 +74,6 @@ public class LrcActivity extends AppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setMax(100);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.lrc_toolbar);
-        shareBtn = (Button)findViewById(R.id.lrc_share_btn);
         seekBarStartText = (TextView) findViewById(R.id.seekbar_start_text);
         seekBarEndText = (TextView) findViewById(R.id.seekbar_end_text);
         preBtn = (Button) findViewById(R.id.lrc_pre_btn);
@@ -100,12 +101,6 @@ public class LrcActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 musicService.seekToPosition(seekBar.getProgress() * musicService.getTotalTime() / 100);//将歌曲播放进度更新
-            }
-        });
-        shareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"分享功能暂未开放",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -295,7 +290,21 @@ public class LrcActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.lrc_toolbar_menu,menu);
+        MenuItem item = menu.findItem(R.id.lrc_toolbar_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        Intent sendIntent =new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "MiniCC MusicPlayer");
+        sendIntent.setType("text/plain");
+        setShareIntent(sendIntent);
+
         return super.onCreateOptionsMenu(menu);
+    }
+    public void setShareIntent(Intent sendIntent){
+        if(mShareActionProvider!=null){
+            mShareActionProvider.setShareIntent(sendIntent);
+        }
     }
 
     Handler handler = new Handler() {
@@ -327,7 +336,7 @@ public class LrcActivity extends AppCompatActivity {
     protected void onDestroy() {
         unbindService(serviceConnection);
         unregisterReceiver(myBroadcastReceiver);
-        Log.i("LrcUi", "Destroy");
+        Log.i("LrcActivity", "Destroy");
         super.onDestroy();
     }
 }

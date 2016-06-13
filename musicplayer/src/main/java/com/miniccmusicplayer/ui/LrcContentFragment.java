@@ -44,7 +44,7 @@ public class LrcContentFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.lrc_fragment_content, container, false);
+        View view = inflater.inflate(R.layout.lrc_frg_content, container, false);
         findViews(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override

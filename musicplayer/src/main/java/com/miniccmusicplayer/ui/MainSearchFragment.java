@@ -22,7 +22,7 @@ public class MainSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view  = inflater.inflate(R.layout.hello_fragment_search,container,false);
+        View view  = inflater.inflate(R.layout.main_frg_search,container,false);
         searchBtn = (Button)view.findViewById(R.id.searchBtn);
         songText  = (EditText)view.findViewById(R.id.songText);
         searchBtn.setOnClickListener(new View.OnClickListener() {

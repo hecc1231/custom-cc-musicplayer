@@ -3,113 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.miniccmusicplayer.ui.RegisterActivity">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/register_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/holo_blue_dark"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/register_toolbar_text"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
-    </android.support.v7.widget.Toolbar>
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/register_toolbar"
             android:layout_width="match_parent"
+            android:background="?attr/colorPrimary"
+            android:layout_height="?attr/actionBarSize"
+            app:title="注册界面"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/register_tablayout"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/user" />
-
-            <EditText
-                android:id="@+id/register_user_edit"
-                android:layout_gravity="bottom"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/register_user_edit_hint" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
+            app:tabIndicatorColor="@android:color/holo_blue_dark"
+            app:tabSelectedTextColor="@android:color/holo_blue_dark"
+            app:tabTextColor="@android:color/darker_gray"/>
+        <android.support.v4.view.ViewPager
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/pwd" />
-
-            <EditText
-                android:id="@+id/register_pwd_edit"
-                android:layout_gravity="bottom"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/register_pwd_edit_hint"
-                android:inputType="textPassword" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/pwd" />
-
-            <EditText
-                android:id="@+id/register_pwd_confirm_edit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/register_pwd_confirm_edit_hint"
-                android:inputType="textPassword" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_margin="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/age" />
-            <EditText
-                android:id="@+id/register_age_edit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/register_age_edit_hint" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/register_confirm_btn"
-            android:layout_margin="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
-            android:text="@string/register_confirm_btn"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:id="@+id/register_viewpager" />
     </LinearLayout>
 </LinearLayout>

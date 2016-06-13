@@ -38,7 +38,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter{
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.item_recyclerview,parent,false);
+        View view = layoutInflater.inflate(R.layout.music_frg_recycleview,parent,false);
         return new ViewHolder(view);
     }
 

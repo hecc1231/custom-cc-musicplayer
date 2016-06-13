@@ -1,18 +1,14 @@
 package com.miniccmusicplayer.ui;
 
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.*;
@@ -24,12 +20,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +34,6 @@ import com.miniccmusicplayer.bean.MyUser;
 import com.miniccmusicplayer.view.CircleImageView;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,11 +50,12 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TextView userText;
+    private Button loginBtn;
     private List<String> tabList;
     private List<Fragment> mFragmentList;
     private CircleImageView circleImageView;
     private String iconPath = "";
-    private static boolean ENTER_MAIN = false;
+    private Intent serviceIntent;
     private static final int MUSIC = 0;
     private static final int SEARCH = 1;
     private final int REQUEST_IMAGE_GET = 0;
@@ -70,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_ui);
+        setContentView(R.layout.activity_main);
         initViews();
         setDrawerLayout();
         initTabPagerList();
-        Intent intent = new Intent(MainActivity.this, MusicService.class);
-        startService(intent);
+        serviceIntent = new Intent(MainActivity.this, MusicService.class);
+        startService(serviceIntent);
         Log.i("MainUi", "OnCreate");
     }
 
@@ -87,43 +80,59 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.main_viewpager);
         tabLayout = (TabLayout) findViewById(R.id.main_tablayout);
         userText = (TextView) findViewById(R.id.na_view_user_text);
+        loginBtn = (Button) findViewById(R.id.na_view_login_btn);
         circleImageView = (CircleImageView) findViewById(R.id.navigationview_head_imageview);
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, REQUEST_IMAGE_GET);
+                MyUser myUser = BmobUser.getCurrentUser(getApplicationContext(), MyUser.class);
+                if (myUser != null) {
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, REQUEST_IMAGE_GET);
+                } else {
+                    Toast.makeText(getApplicationContext(), "骚年请先登录", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        setUserText();
-        setUserIcon();
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+        setUserInfo();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
     /**
-     * 根据本地缓存得到用户头像
+     * 根据本地缓存初始化用户名字
      */
-    public void setUserIcon() {
+    public void setUserInfo() {
         MyUser myUser = BmobUser.getCurrentUser(getApplicationContext(), MyUser.class);
-        BmobFile bmobFile = myUser.getIcon();
-        if (bmobFile != null) {
-            //第一次将用户头像加载到本地缓存
-            if (iconPath.length() == 0) {
+        if (myUser != null) {
+            userText.setText(myUser.getUsername());
+            loginBtn.setVisibility(View.GONE);
+            BmobFile bmobFile = myUser.getIcon();
+            if (bmobFile != null) {
                 bmobFile.download(getApplicationContext(), new DownloadFileListener() {
                     @Override
                     public void onSuccess(String s) {
                         circleImageView.setImageBitmap(BitmapFactory.decodeFile(s));
-                        iconPath = s;
                     }
-
                     @Override
                     public void onFailure(int i, String s) {
                         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                     }
                 });
-            } else {
-                circleImageView.setImageBitmap(BitmapFactory.decodeFile(iconPath));
             }
+        } else {
+            userText.setText("路人");
+            loginBtn.setVisibility(View.VISIBLE);
         }
     }
 
@@ -162,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         icon.upload(this, new UploadFileListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(getApplicationContext(), "头像上传成功", Toast.LENGTH_SHORT).show();
                 MyUser myUser = new MyUser();
                 MyUser currentUser = BmobUser.getCurrentUser(getApplicationContext(), MyUser.class);
                 myUser.setIcon(icon);
@@ -170,29 +178,21 @@ public class MainActivity extends AppCompatActivity {
                 myUser.update(getApplicationContext(), currentUser.getObjectId(), new UpdateListener() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(getApplicationContext(), "更新表url成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "设置头像成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
-                        Toast.makeText(getApplicationContext(), s + "更新", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
             public void onFailure(int i, String s) {
-                Toast.makeText(getApplicationContext(), s + "上传", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    /**
-     * 根据本地缓存初始化用户名字
-     */
-    public void setUserText() {
-        BmobUser bmobUser = BmobUser.getCurrentUser(getApplicationContext(), MyUser.class);
-        userText.setText(bmobUser.getUsername());
     }
 
     public void setDrawerLayout()//设置抽屉布局
@@ -226,15 +226,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.drawer_exit:
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("确定退出");
-                        builder.setTitle("提示");
+                        builder.setMessage("退出当前账号");
+                        builder.setTitle("葱头小提示");
                         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                                 BmobUser.logOut(getApplicationContext());
-                                LoginInActivity.ENTER_MAIN = false;
-                                Intent intent = new Intent(MainActivity.this, LoginInActivity.class);
+                                LoginActivity.ENTER_MAIN = false;
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                 startActivity(intent);
                             }
                         });
@@ -293,25 +293,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent home = new Intent(Intent.ACTION_MAIN);
-            home.addCategory(Intent.CATEGORY_HOME);
-            startActivity(home);
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
         }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.hello_toolbar_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_toolbar_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
-            case R.id.item_search:
-                viewPager.setCurrentItem(SEARCH);
+            case R.id.main_toolbar_setting_sign:
+                intent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -319,6 +322,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("MainActivity","OnDestroy");
+        //防止软件突然中断来不及退出
+        MyUser myUser = BmobUser.getCurrentUser(getApplicationContext(), MyUser.class);
+        if (myUser != null) {
+            BmobUser.logOut(getApplicationContext());
+        }
+        //
         SharedPreferences sharedPreferences = getSharedPreferences("enterCount", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();

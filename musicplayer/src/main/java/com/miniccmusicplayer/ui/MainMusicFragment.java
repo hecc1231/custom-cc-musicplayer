@@ -40,10 +40,17 @@ public class MainMusicFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         bindToService();
-        View view = inflater.inflate(R.layout.hello_fragment_music, container, false);
+        View view = inflater.inflate(R.layout.main_frg_music, container, false);
         findViews(view);//初始化recyclerView
         return view;
     }
+
+    @Override
+    public void onStart() {
+        setPlayBtnDrawable();
+        super.onStart();
+    }
+
     public void bindToService(){
         Intent intent = new Intent(getActivity().getApplicationContext(),MusicService.class);
         getActivity().getApplicationContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -69,11 +76,12 @@ public class MainMusicFragment extends Fragment {
         }
     };
     public void setPlayBtnDrawable(){
-        if(musicService.isPlaying()){
-            playBtn.setBackgroundResource(R.drawable.pause);
-        }
-        else{
-            playBtn.setBackgroundResource(R.drawable.play);
+        if(musicService!=null) {
+            if (musicService.isPlaying()) {
+                playBtn.setBackgroundResource(R.drawable.pause);
+            } else {
+                playBtn.setBackgroundResource(R.drawable.play);
+            }
         }
     }
     /**
