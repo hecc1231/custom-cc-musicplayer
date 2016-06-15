@@ -30,12 +30,13 @@ public class MainMusicFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private GridLayout playBarGridLayout;
-    private Button  playBtn;
+    private Button playBtn;
     private Button nextBtn;
     private TextView textView;//显示歌曲总数
     private TextView songInfoText;//显示播放板上的歌曲信息
     private MusicService musicService;
-    private final int MUSIC_FRAGMENT=0;
+    private final int MUSIC_FRAGMENT = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,19 +52,20 @@ public class MainMusicFragment extends Fragment {
         super.onStart();
     }
 
-    public void bindToService(){
-        Intent intent = new Intent(getActivity().getApplicationContext(),MusicService.class);
+    public void bindToService() {
+        Intent intent = new Intent(getActivity().getApplicationContext(), MusicService.class);
         getActivity().getApplicationContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //绑定服务
     }
+
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.i("MusicFragment","Service Connect");
+            Log.i("MusicFragment", "Service Connect");
             MusicService.MyBinder myBinder = (MusicService.MyBinder) service;
             musicService = myBinder.getService();
             setMusicPagerView();//导入recyclerView视图
@@ -71,12 +73,14 @@ public class MainMusicFragment extends Fragment {
             setPlayBtnDrawable();//设置按钮播放状态
             new Thread(myRunnable).start();//开启子线程
         }
+
         @Override
         public void onServiceDisconnected(ComponentName name) {
         }
     };
-    public void setPlayBtnDrawable(){
-        if(musicService!=null) {
+
+    public void setPlayBtnDrawable() {
+        if (musicService != null) {
             if (musicService.isPlaying()) {
                 playBtn.setBackgroundResource(R.drawable.pause);
             } else {
@@ -84,13 +88,14 @@ public class MainMusicFragment extends Fragment {
             }
         }
     }
+
     /**
      * 接受子线程传来的下方歌曲和歌手信息（更新下方歌曲栏信息）
      */
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     String str = msg.getData().getString("data");
                     songInfoText.setText(str);
@@ -104,14 +109,14 @@ public class MainMusicFragment extends Fragment {
     Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            while(true) {
+            while (true) {
                 int index = musicService.getPlayIndex();
                 Message msg = new Message();
                 msg.what = 1;
-                String str = musicService.getSongList().get(index).getTitle()+"\r\n"+
+                String str = musicService.getSongList().get(index).getTitle() + "\r\n" +
                         musicService.getSongList().get(index).getArtist();
                 Bundle data = new Bundle();
-                data.putString("data",str);
+                data.putString("data", str);
                 msg.setData(data);
                 handler.sendMessage(msg);
                 try {
@@ -122,17 +127,16 @@ public class MainMusicFragment extends Fragment {
             }
         }
     };
-    void setClickListener()
-    {
+
+    void setClickListener() {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //0代表播放中，1代表暂停
-                if(musicService.isPlaying()) {
+                if (musicService.isPlaying()) {
                     musicService.stopPlay();
                     playBtn.setBackgroundResource(R.drawable.play);
-                }
-                else{
+                } else {
                     musicService.continuePlay();
                     playBtn.setBackgroundResource(R.drawable.pause);
                 }
@@ -146,17 +150,17 @@ public class MainMusicFragment extends Fragment {
             }
         });
     }
-    void findViews(View view)
-    {
-        mRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerview);
-        playBarGridLayout = (GridLayout)view.findViewById(R.id.music_play_bar);
-        textView = (TextView)view.findViewById(R.id.music_tip_text);
-        songInfoText = (TextView)view.findViewById(R.id.songInfoText);
-        playBtn = (Button)view.findViewById(R.id.play_btn);
-        nextBtn = (Button)view.findViewById(R.id.next_play_btn);
+
+    void findViews(View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        playBarGridLayout = (GridLayout) view.findViewById(R.id.music_play_bar);
+        textView = (TextView) view.findViewById(R.id.music_tip_text);
+        songInfoText = (TextView) view.findViewById(R.id.songInfoText);
+        playBtn = (Button) view.findViewById(R.id.play_btn);
+        nextBtn = (Button) view.findViewById(R.id.next_play_btn);
     }
-    void setMusicPagerView()
-    {
+
+    void setMusicPagerView() {
         //LayoutInflater inflater = LayoutInflater.from(this); LayoutInflater是每次new出一个新的View,跟以前new出来的View没有任何关系
         //mRecyclerView = (RecyclerView)inflater.inflate(R.layout.page_music,null).findViewById(R.id.recyclerview);
         textView.setText("本地歌曲(共" + musicService.getSongNum() + "首)");
@@ -168,19 +172,16 @@ public class MainMusicFragment extends Fragment {
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         //设置recyclerView适配器
-        final RecyclerAdapter mRecyclerAdapter = new RecyclerAdapter(this.getActivity(),musicService.getSongList());
+        final RecyclerAdapter mRecyclerAdapter = new RecyclerAdapter(this.getActivity(),
+                musicService.getSongList(), MUSIC_FRAGMENT);
         //设置item点击监听
         mRecyclerAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+                musicService.setSongList(musicService.getLocalSongList(), MusicService.LOCAL);//还原成本地歌单
+
                 musicService.onItemPlay(position);
                 setPlayBtnDrawable();//改变播放按钮的状态
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-//                mRecyclerAdapter.insertData();
             }
         });
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -188,9 +189,9 @@ public class MainMusicFragment extends Fragment {
         playBarGridLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),LrcActivity.class);
+                Intent intent = new Intent(getActivity(), LrcActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("song",musicService.getSongList().get(musicService.getPlayIndex()));
+                bundle.putSerializable("song", musicService.getSongList().get(musicService.getPlayIndex()));
                 intent.putExtras(bundle);
                 startActivityForResult(intent, MUSIC_FRAGMENT);
             }

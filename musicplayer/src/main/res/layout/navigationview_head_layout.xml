@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    android:background="@android:color/holo_blue_dark"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.miniccmusicplayer.view.CircleImageView
+            android:id="@+id/navigationview_head_imageview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="20dp"
+            android:gravity="left"
+            android:src="@drawable/user"
+            app:civ_border_color="@android:color/darker_gray"
+            app:civ_border_width="2dp" />
+
+        <TextView
+            android:id="@+id/na_view_user_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="未登录"
+            android:textSize="20dp"
+            android:typeface="serif" />
+
+        <Button
+            android:layout_margin="20dp"
+            android:id="@+id/na_view_login_btn"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/button_shape"
+            android:text="登录账号"
+            android:textSize="20dp"
+            android:textColor="@android:color/holo_blue_dark" />
+    </LinearLayout>
+</LinearLayout>

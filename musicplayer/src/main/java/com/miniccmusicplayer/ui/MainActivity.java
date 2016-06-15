@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private List<String> tabList;
     private List<Fragment> mFragmentList;
     private CircleImageView circleImageView;
-    private String iconPath = "";
     private Intent serviceIntent;
     private static final int MUSIC = 0;
     private static final int SEARCH = 1;

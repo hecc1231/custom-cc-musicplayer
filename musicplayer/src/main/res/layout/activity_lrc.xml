@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lrc_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/lrc_bg"
+    android:orientation="vertical"
+    tools:context="com.miniccmusicplayer.ui.LrcActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/lrc_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lrc_toolbar_song_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:text="hello everyone"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/lrc_toolbar_singer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="singer"
+                android:textSize="10dp" />
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/sub_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"></FrameLayout>
+
+    <GridLayout
+        android:id="@+id/music_play_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:columnCount="9"
+        android:rowCount="3">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="9"
+            android:layout_columnWeight="1"
+            android:layout_margin="10dp" />
+
+        <TextView
+            android:id="@+id/seekbar_start_text"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_row="1"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/seekbar_end_text"
+            android:layout_height="wrap_content"
+            android:layout_column="7"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="1"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_row="1"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/lrc_mode_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_columnSpan="1"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="15dp"
+            android:background="@drawable/random" />
+
+        <Button
+            android:id="@+id/lrc_pre_btn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_columnSpan="2"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="15dp"
+            android:background="@drawable/pre" />
+
+        <Button
+            android:id="@+id/lrc_play_btn"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_columnSpan="3"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="15dp"
+            android:background="@drawable/pause" />
+
+        <Button
+            android:id="@+id/lrc_next_btn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_columnSpan="2"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="15dp"
+            android:background="@drawable/next" />
+
+        <Button
+            android:id="@+id/lrc_list_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_columnSpan="1"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="15dp"
+            android:background="@drawable/list" />
+    </GridLayout>
+</LinearLayout>

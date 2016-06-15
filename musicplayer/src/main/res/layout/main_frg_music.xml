@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.miniccmusicplayer.ui.MainMusicFragment">
+
+    <TextView
+        android:id="@+id/music_tip_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:text="本地歌曲"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="15dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/transparent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/music_play_bar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/lrc_bg"
+        android:columnCount="7"
+        android:orientation="horizontal">
+
+        <com.miniccmusicplayer.view.CircleImageView
+            app:civ_border_color="@android:color/darker_gray"
+            app:civ_border_width="2dp"
+            android:id="@+id/hello_album_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_columnSpan="1"
+            android:layout_margin="5dp"
+            android:src="@drawable/bg" />
+
+        <TextView
+            android:id="@+id/songInfoText"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_columnSpan="4"
+            android:layout_columnWeight="1"
+            android:layout_margin="10dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:text="songnfo"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/play_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_columnSpan="1"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/pause" />
+
+        <Button
+            android:id="@+id/next_play_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_columnSpan="1"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:background="@drawable/next" />
+    </GridLayout>
+
+</LinearLayout>

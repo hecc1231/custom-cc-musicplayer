@@ -58,10 +58,6 @@ public class LrcAlbumImageFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //获取专辑界面
-        //mMusicService = ((LrcUi) getActivity()).getService();
-        //new Thread(myRunnable).start();
-
     }
 
     /**

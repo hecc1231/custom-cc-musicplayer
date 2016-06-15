@@ -9,13 +9,18 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.miniccmusicplayer.bean.MyLatelySong;
+import com.miniccmusicplayer.bean.MyUser;
 import com.miniccmusicplayer.bean.Song;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  * Created by Hersch on 2016/3/26.
@@ -24,10 +29,18 @@ public class MusicService extends Service{
     public static final int LIST_MODE = 0;
     public static final int RANDOM_MODE = 1;
     public static final int SINGLE_MODE = 2;
+    public static final int LOCAL = 0;
+    public static final int LATE = 1;
     private int playMode = LIST_MODE;
+    private int LIST_KIND = 0;
     private int playIndex=0;
     private MediaPlayer musicPlayer;
-    private List<Song>songList;//歌曲列表
+    private List<Song>songList;//当前歌曲列表
+    private List<Song> localSongList;//本地列表
+
+    public List<Song> getLocalSongList(){
+        return this.localSongList;
+    }
     public List<Song> getSongList() {
         return songList;
     }
@@ -55,7 +68,6 @@ public class MusicService extends Service{
             }
         });
     }
-
     /**
      * 获取歌曲总数
      * @return
@@ -79,6 +91,8 @@ public class MusicService extends Service{
             Log.i("MusicService","setData Error!");
             e.printStackTrace();
         }
+        //记录播放过的歌曲
+        updateLatelySongForm(songList.get(playIndex));
     }
 
     /**
@@ -111,6 +125,8 @@ public class MusicService extends Service{
             Log.i("MusicService","preSongPlay error");
             e.printStackTrace();
         }
+        //记录播放过的歌曲
+        updateLatelySongForm(songList.get(playIndex));
     }
 
     /**
@@ -147,6 +163,7 @@ public class MusicService extends Service{
             Log.i("MusicService","nextSongPlay error");
             e.printStackTrace();
         }
+        updateLatelySongForm(songList.get(playIndex));
     }
 
     /**
@@ -166,14 +183,46 @@ public class MusicService extends Service{
     }
     public void stopPlay() {
         musicPlayer.pause();
-        Log.i("MusicService",""+musicPlayer.getCurrentPosition());
+        Log.i("MusicService", "" + musicPlayer.getCurrentPosition());
     }
     public void continuePlay() {
         musicPlayer.start();
     }
-    //初始化歌曲列表songList
+
+    /**
+     * 每播放一首歌就将其记录在后台最近播放列表中
+     * @param song
+     */
+    public void updateLatelySongForm(Song song){
+        MyUser myUser = MyUser.getCurrentUser(getApplicationContext(),MyUser.class);
+        //在用户登录的情况下才记录
+        if(myUser!=null&&LIST_KIND!=LATE) {
+            MyLatelySong myLatelySong = new MyLatelySong();
+            myLatelySong.setUser(myUser);
+            myLatelySong.setTitle(song.getTitle());
+            myLatelySong.setArtist(song.getArtist());
+            myLatelySong.setUrl(song.getUrl());
+            myLatelySong.setDuration(song.getDuration());
+            myLatelySong.setId(song.getId());
+            myLatelySong.save(getApplicationContext(), new SaveListener() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(getApplicationContext(),"最近记录成功", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(int i, String s) {
+                    Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    /**
+     * 扫描手机的音频库获取所有歌曲
+     */
     void initMusicList() {
-        songList = new ArrayList<>();
+        localSongList = new ArrayList<>();
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         for (int i = 0; i < cursor.getCount(); i++)
         {
@@ -192,14 +241,17 @@ public class MusicService extends Service{
                 song.setArtist(artist);
                 song.setDuration(duration);
                 song.setUrl(url);
-                songList.add(song);
+                localSongList.add(song);
             }
         }
-        if(songList.size()==0)
-        {
-            //
+        if(localSongList.size()==0) {
+            //exit();
         }
-
+        songList = localSongList;
+    }
+    public void setSongList(List<Song>list,int listKind){
+        this.songList = list;
+        this.LIST_KIND = listKind;
     }
     public boolean isPlaying(){
         return musicPlayer.isPlaying();
