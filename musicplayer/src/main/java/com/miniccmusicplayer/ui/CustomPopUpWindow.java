@@ -93,35 +93,37 @@ public class CustomPopUpWindow extends PopupWindow {
     public void deleteLatelySong() {
         List<MyLatelySong> list;
         MyUser user = BmobUser.getCurrentUser(getContentView().getContext(), MyUser.class);
-        BmobQuery<MyLatelySong> query = new BmobQuery<MyLatelySong>();
-        query.addWhereEqualTo("user", user.getObjectId());    // 查询当前用户的所有帖子
-        query.order("-updatedAt");
-        query.include("user");
-        query.findObjects(getContentView().getContext(), new FindListener<MyLatelySong>() {
-            @Override
-            public void onSuccess(List<MyLatelySong> object) {
-                List<BmobObject> objects = new ArrayList<BmobObject>();
-                for (MyLatelySong myLatelySong : object) {
-                    objects.add(myLatelySong);
+        if(user!=null) {
+            BmobQuery<MyLatelySong> query = new BmobQuery<MyLatelySong>();
+            query.addWhereEqualTo("user", user.getObjectId());    // 查询当前用户的所有帖子
+            query.order("-updatedAt");
+            query.include("user");
+            query.findObjects(getContentView().getContext(), new FindListener<MyLatelySong>() {
+                @Override
+                public void onSuccess(List<MyLatelySong> object) {
+                    List<BmobObject> objects = new ArrayList<BmobObject>();
+                    for (MyLatelySong myLatelySong : object) {
+                        objects.add(myLatelySong);
+                    }
+                    new BmobObject().deleteBatch(getContentView().getContext(), objects, new DeleteListener() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(getContentView().getContext(), "清空成功", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(int i, String s) {
+                            Toast.makeText(getContentView().getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
-                new BmobObject().deleteBatch(getContentView().getContext(), objects, new DeleteListener() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(getContentView().getContext(), "清空成功", Toast.LENGTH_SHORT).show();
-                    }
 
-                    @Override
-                    public void onFailure(int i, String s) {
-                        Toast.makeText(getContentView().getContext(), "删除成功", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onError(int code, String msg) {
-                // TODO Auto-generated method stub
-            }
-        });
+                @Override
+                public void onError(int code, String msg) {
+                    // TODO Auto-generated method stub
+                }
+            });
+        }
     }
 
     public void setParameters() {

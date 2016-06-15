@@ -161,8 +161,7 @@ public class MainMusicFragment extends Fragment {
     }
 
     void setMusicPagerView() {
-        //LayoutInflater inflater = LayoutInflater.from(this); LayoutInflater是每次new出一个新的View,跟以前new出来的View没有任何关系
-        //mRecyclerView = (RecyclerView)inflater.inflate(R.layout.page_music,null).findViewById(R.id.recyclerview);
+        musicService.initMusicList();//初始化musicService的列表为本地列表而不是最近听过列表
         textView.setText("本地歌曲(共" + musicService.getSongNum() + "首)");
         mRecyclerView.setHasFixedSize(true);
         //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
