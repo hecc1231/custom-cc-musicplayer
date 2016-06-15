@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
-                android:hint="@string/register_sms_btn_text" />
+                android:hint="@string/register_sms_edit_hint" />
 
             <Button
                 android:id="@+id/mobile_frg_sms_btn"

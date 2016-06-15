@@ -1,7 +1,9 @@
 package com.miniccmusicplayer.ui;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -12,8 +14,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hersch.musicplayer.R;
+import com.miniccmusicplayer.bean.MyUser;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Pattern;
+
+import cn.bmob.v3.BmobSMS;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.RequestSMSCodeListener;
+import cn.bmob.v3.listener.SaveListener;
 
 public class RegisterMobileFragment extends Fragment {
     private Button mSignBtn;
@@ -22,6 +34,9 @@ public class RegisterMobileFragment extends Fragment {
     private EditText mSmsEdit;
     private Button mSmsBtn;
     private final int PWD_LENGTH = 8;
+    private final String SMS_MODEL = "MiniCC";
+    private int time = 120;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,22 +46,65 @@ public class RegisterMobileFragment extends Fragment {
     }
 
     public void initViews(View view) {
-        mMobileEdit = (EditText)view.findViewById(R.id.mobile_frg_mobile_edit);
+        mMobileEdit = (EditText) view.findViewById(R.id.mobile_frg_mobile_edit);
         mPwdEdit = (EditText) view.findViewById(R.id.mobile_frg_pwd_edit);
         mSmsBtn = (Button) view.findViewById(R.id.mobile_frg_sms_btn);
-        mSmsEdit = (EditText)view.findViewById(R.id.mobile_frg_sms_edit);
-        mSignBtn = (Button)view.findViewById(R.id.mobile_frg_sign_btn);
+        mSmsEdit = (EditText) view.findViewById(R.id.mobile_frg_sms_edit);
+        mSignBtn = (Button) view.findViewById(R.id.mobile_frg_sign_btn);
         mSignBtn.setClickable(false);
         mSignBtn.setBackgroundColor(Color.LTGRAY);
-        mSignBtn.setOnClickListener(new View.OnClickListener() {
+        mSignBtn.setOnClickListener(onClickListener);
+        mSmsBtn.setOnClickListener(onClickListener);
+    }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.mobile_frg_sms_btn:
+                    BmobSMS.requestSMSCode(getContext(), mMobileEdit.getText().toString(), SMS_MODEL, new RequestSMSCodeListener() {
+                        @Override
+                        public void done(Integer integer, BmobException e) {
+                            if (e == null) {
+                                Toast.makeText(getContext(), "验证码短信发送成功", Toast.LENGTH_SHORT).show();
+                                mSignBtn.setClickable(true);
+                                mSignBtn.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
+                                setSmsTimer();
+                            } else {
+                                Toast.makeText(getContext(), "验证码短信发送失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    break;
+                case R.id.mobile_frg_sign_btn:
+                    if (checkRegisterInfo()) {
+                        registerUserToBmob();//注册
+                    }
+                    break;
+            }
+        }
+    };
+    public void setSmsTimer() {
+        mSmsBtn.setClickable(false);
+        mSmsBtn.setBackgroundColor(Color.LTGRAY);
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
             @Override
-            public void onClick(View v) {
-                if (checkRegisterInfo()) {
-                    registerUserToBmob();//注册
+            public void run() {
+                if(time>=0) {
+                    mSmsBtn.setText("剩余" +time+"s");
+                    time--;
+                    handler.postDelayed(this, 1000);
+                }
+                else{
+                    mSmsBtn.setClickable(true);
+                    mSmsBtn.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
             }
         });
     }
+
     public boolean checkRegisterInfo() {
         //密码长度小于最小长度
         String pwdString = mPwdEdit.getText().toString();
@@ -62,38 +120,21 @@ public class RegisterMobileFragment extends Fragment {
     }
 
     public void registerUserToBmob() {
+        MyUser myUser = new MyUser();
+        myUser.setPassword(mPwdEdit.getText().toString());
+        myUser.setMobilePhoneNumber(mMobileEdit.getText().toString());
+        myUser.signOrLogin(getContext(), mSmsEdit.getText().toString(), new SaveListener() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(getContext(), "注册成功", Toast.LENGTH_SHORT).show();
+            }
 
-//        MyUser myUser = new MyUser();
-//        myUser.setPassword(pwdEdit.getText().toString());
-//        myUser.setMobilePhoneNumber(mobileEdit.getText().toString());
-//        myUser.signUp(getApplicationContext(), new SaveListener() {
-//            @Override
-//            public void onSuccess() {
-//                Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(RegisterActivity.this, LoginInActivity.class);
-//                startActivity(intent);
-//            }
-//            @Override
-//            public void onFailure(int i, String s) {
-//                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+            @Override
+            public void onFailure(int i, String s) {
+                Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
-    /**
-     * 判断年龄格式是否合法
-     *
-     * @param ageString
-     * @return
-     */
-    public boolean isAgeAvaliable(String ageString) {
-        Pattern pattern = Pattern.compile("[0-9]*");
-        if (!pattern.matcher(ageString).matches()) {
-            return false;
-        }
-        return true;
-    }
-
     public boolean isPwdAvaliable(String pwdString) {
         Pattern pattern = Pattern.compile("[[0-9]*|[a-z]*|[A-Z]*]*");
         if (!pattern.matcher(pwdString).matches()) {

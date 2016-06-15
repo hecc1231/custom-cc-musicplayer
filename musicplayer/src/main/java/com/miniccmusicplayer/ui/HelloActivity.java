@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobSMS;
 import cn.bmob.v3.BmobUser;
 
 public class HelloActivity extends AppCompatActivity {
@@ -36,6 +37,9 @@ public class HelloActivity extends AppCompatActivity {
             }
         });
         getPreferenceData();
+    }
+    public void initBmob(){
+        Bmob.initialize(getApplicationContext(), APP_ID);
     }
     public void jumpToNextActivity(){
         //当前存在用户
@@ -86,8 +90,5 @@ public class HelloActivity extends AppCompatActivity {
         else{
             jumpToNextActivity();
         }
-    }
-    public void initBmob(){
-        Bmob.initialize(getApplicationContext(),APP_ID);
     }
 }

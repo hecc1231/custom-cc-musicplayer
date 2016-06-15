@@ -38,6 +38,7 @@ import cn.bmob.v3.listener.SaveListener;
 
 /**
  * Created by Hersch on 2016/6/14.
+ * 最近播放歌词列表窗口
  */
 public class CustomPopUpWindow extends PopupWindow {
     private final int POPUPWINDOW = 1;
