@@ -322,12 +322,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i("MainActivity","OnDestroy");
-        //防止软件突然中断来不及退出
-        MyUser myUser = BmobUser.getCurrentUser(getApplicationContext(), MyUser.class);
-        if (myUser != null) {
-            BmobUser.logOut(getApplicationContext());
-        }
-        //
         SharedPreferences sharedPreferences = getSharedPreferences("enterCount", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();

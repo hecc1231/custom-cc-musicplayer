@@ -34,7 +34,7 @@ public class RegisterMobileFragment extends Fragment {
     private EditText mSmsEdit;
     private Button mSmsBtn;
     private final int PWD_LENGTH = 8;
-    private final String SMS_MODEL = "MiniCC";
+    private final String SMS_MODEL = "SMS";
     private int time = 120;
 
     @Override
@@ -42,6 +42,7 @@ public class RegisterMobileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.register_frg_mobile, container, false);
         initViews(view);
+        cn.bmob.sms.BmobSMS.initialize(getContext(), HelloActivity.APP_ID);
         return view;
     }
 
@@ -56,13 +57,12 @@ public class RegisterMobileFragment extends Fragment {
         mSignBtn.setOnClickListener(onClickListener);
         mSmsBtn.setOnClickListener(onClickListener);
     }
-
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.mobile_frg_sms_btn:
-                    BmobSMS.requestSMSCode(getContext(), mMobileEdit.getText().toString(), SMS_MODEL, new RequestSMSCodeListener() {
+                    BmobSMS.requestSMSCode(getContext(), mMobileEdit.getText().toString(),SMS_MODEL, new RequestSMSCodeListener() {
                         @Override
                         public void done(Integer integer, BmobException e) {
                             if (e == null) {

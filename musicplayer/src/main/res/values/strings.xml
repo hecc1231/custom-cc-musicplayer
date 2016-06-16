@@ -2,6 +2,8 @@
     <string name="app_name">MusicPlayer</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
+    <string name="hello_text">聆听内心的声音</string>
+    <string name="hell0_btn_text">立即体验</string>
     <string name="login_user_edit">用户名</string>
     <string name="login_pwd_edit">密码</string>
     <string name="login_toolbar_text">登录界面</string>

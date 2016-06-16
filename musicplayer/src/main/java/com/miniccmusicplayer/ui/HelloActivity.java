@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import com.example.hersch.musicplayer.R;
 import com.miniccmusicplayer.bean.MyUser;
 
@@ -16,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobSMS;
+import cn.bmob.sms.BmobSMS;
 import cn.bmob.v3.BmobUser;
 
 public class HelloActivity extends AppCompatActivity {
@@ -85,7 +84,7 @@ public class HelloActivity extends AppCompatActivity {
             editor.putBoolean("count",true);
             editor.commit();
             Timer timer = new Timer();
-            timer.schedule(timerTask, 1000 * 2);
+            timer.schedule(timerTask, 1000 * 5);
         }
         else{
             jumpToNextActivity();
